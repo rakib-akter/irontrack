@@ -1,0 +1,59 @@
+// Prisma schema for the Health/Gym progress app.
+// Datasource is Postgres (Supabase). Set DATABASE_URL in web/.env.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  // Supabase's connection pooler can't run migrations; DIRECT_URL points at the
+  // direct (port 5432) connection. For a plain local Postgres, set both to the
+  // same value.
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String?
+  passwordHash String
+  createdAt    DateTime @default(now())
+
+  lifts LiftEntry[]
+  goals Goal[]
+}
+
+// A single logged set/session for a lift, e.g. "Bench Press, 225lb x 5".
+model LiftEntry {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  exercise   String // normalized lower-case key, e.g. "bench press"
+  weight     Float // weight lifted, in the unit stored on the entry
+  reps       Int
+  sets       Int      @default(1)
+  unit       String   @default("lb") // "lb" or "kg"
+  notes      String?
+  performedAt DateTime @default(now())
+  createdAt  DateTime @default(now())
+
+  @@index([userId, exercise, performedAt])
+}
+
+// A strength goal, e.g. "bench press 315 lb".
+model Goal {
+  id           String    @id @default(cuid())
+  userId       String
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  exercise     String
+  targetWeight Float
+  targetReps   Int       @default(1)
+  unit         String    @default("lb")
+  targetDate   DateTime?
+  achieved     Boolean   @default(false)
+  createdAt    DateTime  @default(now())
+
+  @@index([userId, exercise])
+}
