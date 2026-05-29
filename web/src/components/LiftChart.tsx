@@ -73,7 +73,7 @@ export default function LiftChart({
               fontSize: 12,
             }}
             labelStyle={{ color: "#a1a1aa" }}
-            formatter={(v: number) => [`${Math.round(v)} ${unit}`, "Est. 1RM"]}
+            formatter={(v) => [`${Math.round(Number(v))} ${unit}`, "Est. 1RM"]}
           />
           {goal ? (
             <ReferenceLine

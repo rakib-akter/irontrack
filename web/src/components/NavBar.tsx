@@ -42,6 +42,11 @@ export default function NavBar({ name }: { name: string | null }) {
               </Link>
             );
           })}
+          {name && (
+            <span className="ml-2 hidden text-sm text-zinc-500 sm:inline">
+              Hi, {name}
+            </span>
+          )}
           <button
             onClick={logout}
             className="ml-2 rounded-lg px-3 py-1.5 text-sm text-zinc-400 hover:text-zinc-100"
