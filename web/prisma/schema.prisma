@@ -21,8 +21,9 @@ model User {
   passwordHash String
   createdAt    DateTime @default(now())
 
-  lifts LiftEntry[]
-  goals Goal[]
+  lifts       LiftEntry[]
+  goals       Goal[]
+  bodyWeights BodyWeightEntry[]
 }
 
 // A single logged set/session for a lift, e.g. "Bench Press, 225lb x 5".
@@ -40,6 +41,20 @@ model LiftEntry {
   createdAt  DateTime @default(now())
 
   @@index([userId, exercise, performedAt])
+}
+
+// A body-weight measurement logged on a given day.
+model BodyWeightEntry {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  weight      Float
+  unit        String   @default("lb") // "lb" or "kg"
+  notes       String?
+  performedAt DateTime @default(now())
+  createdAt   DateTime @default(now())
+
+  @@index([userId, performedAt])
 }
 
 // A strength goal, e.g. "bench press 315 lb".
