@@ -106,3 +106,45 @@ export function volumeStats(points: ProgressPoint[]): VolumeStats {
     },
   };
 }
+
+/** Midnight on the Monday of the week containing `d` (local time). */
+export function startOfWeek(d: Date = new Date()): Date {
+  const date = new Date(d);
+  date.setHours(0, 0, 0, 0);
+  const day = date.getDay(); // 0=Sun .. 6=Sat
+  const sinceMonday = (day + 6) % 7;
+  date.setDate(date.getDate() - sinceMonday);
+  return date;
+}
+
+/** Total volume logged since the start of the current week. */
+export function currentWeekVolume(
+  points: ProgressPoint[],
+  now: Date = new Date(),
+): number {
+  const start = startOfWeek(now);
+  return points
+    .filter((p) => p.performedAt >= start)
+    .reduce((sum, p) => sum + volumeOf(p), 0);
+}
+
+/**
+ * A simple rule-based suggested weekly volume target: ~5% above the average of
+ * the weeks you've actually trained this lift (encouraging gentle progressive
+ * overload), rounded to a tidy number. Returns null with no data.
+ *
+ * This is the seam where an AI assistant can later produce a smarter,
+ * individualized target — callers just consume a number.
+ */
+export function suggestedWeeklyVolume(points: ProgressPoint[]): number | null {
+  if (points.length === 0) return null;
+  const byWeek = new Map<string, number>();
+  for (const p of points) {
+    const key = startOfWeek(p.performedAt).toISOString().slice(0, 10);
+    byWeek.set(key, (byWeek.get(key) ?? 0) + volumeOf(p));
+  }
+  const weeklyVolumes = [...byWeek.values()];
+  const avg =
+    weeklyVolumes.reduce((a, b) => a + b, 0) / weeklyVolumes.length;
+  return Math.max(100, Math.round((avg * 1.05) / 100) * 100);
+}
