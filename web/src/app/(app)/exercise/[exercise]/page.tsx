@@ -9,6 +9,8 @@ import {
   repMaxes,
   volumeStats,
   volumeOf,
+  currentWeekVolume,
+  suggestedWeeklyVolume,
   type ProgressPoint,
 } from "@/lib/progress";
 import LiftChart, { type ChartPoint } from "@/components/LiftChart";
@@ -17,6 +19,7 @@ import LiftList, { type LiftRow } from "@/components/LiftList";
 import LogLiftForm from "@/components/LogLiftForm";
 import ExerciseStats from "@/components/ExerciseStats";
 import VolumeChart, { type VolumePoint } from "@/components/VolumeChart";
+import VolumeGoalCard from "@/components/VolumeGoalCard";
 
 export const dynamic = "force-dynamic";
 
@@ -30,12 +33,15 @@ export default async function ExercisePage({
   const { exercise: raw } = await params;
   const exercise = normalizeExercise(decodeURIComponent(raw));
 
-  const [lifts, goal] = await Promise.all([
+  const [lifts, goal, volumeGoal] = await Promise.all([
     prisma.liftEntry.findMany({
       where: { userId, exercise },
       orderBy: { performedAt: "asc" },
     }),
     prisma.goal.findFirst({ where: { userId, exercise } }),
+    prisma.volumeGoal.findUnique({
+      where: { userId_exercise: { userId, exercise } },
+    }),
   ]);
 
   const unit = goal?.unit ?? lifts[0]?.unit ?? "lb";
@@ -117,6 +123,9 @@ export default async function ExercisePage({
       }),
     }));
 
+  const weekVolume = currentWeekVolume(points);
+  const suggestedVolume = suggestedWeeklyVolume(points);
+
   return (
     <div className="space-y-6">
       <div>
@@ -141,11 +150,20 @@ export default async function ExercisePage({
         <LiftChart data={chartData} unit={unit} goal={goal1RM} />
       </div>
 
-      <div className="card">
-        <h2 className="mb-3 text-sm font-medium uppercase tracking-wide text-zinc-400">
-          Training volume over time
-        </h2>
-        <VolumeChart data={volumeChartData} unit={unit} />
+      <div className="grid gap-6 md:grid-cols-2">
+        <div className="card">
+          <h2 className="mb-3 text-sm font-medium uppercase tracking-wide text-zinc-400">
+            Training volume over time
+          </h2>
+          <VolumeChart data={volumeChartData} unit={unit} />
+        </div>
+        <VolumeGoalCard
+          exercise={exercise}
+          unit={unit}
+          weekVolume={weekVolume}
+          target={volumeGoal?.weeklyVolume ?? null}
+          suggested={suggestedVolume}
+        />
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
