@@ -25,6 +25,7 @@ model User {
   goals          Goal[]
   bodyWeights    BodyWeightEntry[]
   bodyWeightGoal BodyWeightGoal?
+  volumeGoals    VolumeGoal[]
 }
 
 // A single logged set/session for a lift, e.g. "Bench Press, 225lb x 5".
@@ -67,6 +68,21 @@ model BodyWeightGoal {
   unit         String    @default("lb")
   targetDate   DateTime?
   createdAt    DateTime  @default(now())
+}
+
+// A weekly training-volume target for an exercise (weight x reps x sets per
+// week). One per (user, exercise). Today it's user-set; an AI assistant can
+// suggest the value later.
+model VolumeGoal {
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  exercise     String
+  weeklyVolume Float
+  unit         String   @default("lb")
+  createdAt    DateTime @default(now())
+
+  @@unique([userId, exercise])
 }
 
 // A strength goal, e.g. "bench press 315 lb".
