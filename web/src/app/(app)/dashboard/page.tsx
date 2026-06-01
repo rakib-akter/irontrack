@@ -11,7 +11,7 @@ export default async function DashboardPage() {
   const userId = await getUserId();
   if (!userId) redirect("/login");
 
-  const [lifts, goals, bodyWeights] = await Promise.all([
+  const [lifts, goals, bodyWeights, bwGoal] = await Promise.all([
     prisma.liftEntry.findMany({
       where: { userId },
       orderBy: { performedAt: "desc" },
@@ -21,6 +21,7 @@ export default async function DashboardPage() {
       where: { userId },
       orderBy: { performedAt: "asc" },
     }),
+    prisma.bodyWeightGoal.findUnique({ where: { userId } }),
   ]);
 
   // Body weight summary: current = latest, change = latest - first.
@@ -30,6 +31,11 @@ export default async function DashboardPage() {
   const firstBW = bodyWeights.length ? bodyWeights[0] : null;
   const bwChange =
     currentBW && firstBW ? currentBW.weight - firstBW.weight : null;
+  // Distance to body-weight goal (signed): + => gain, - => lose.
+  const bwToGoal =
+    currentBW && bwGoal
+      ? Math.round((bwGoal.targetWeight - currentBW.weight) * 10) / 10
+      : null;
 
   // Summarize per exercise. Lifts are sorted newest-first, so the first time we
   // see an exercise is its most recent set.
@@ -84,6 +90,15 @@ export default async function DashboardPage() {
               ? "Log your weight to start tracking"
               : `${bwChange > 0 ? "+" : ""}${Math.round(bwChange * 10) / 10} ${currentBW?.unit} since start`}
           </p>
+          {bwGoal && (
+            <p className="mt-2 text-xs font-medium text-amber-400">
+              {bwToGoal === null
+                ? `Goal ${bwGoal.targetWeight} ${bwGoal.unit}`
+                : bwToGoal === 0
+                  ? `🎉 Goal reached (${bwGoal.targetWeight} ${bwGoal.unit})`
+                  : `${Math.abs(bwToGoal)} ${bwGoal.unit} to ${bwToGoal < 0 ? "lose" : "gain"} → ${bwGoal.targetWeight} ${bwGoal.unit}`}
+            </p>
+          )}
         </Link>
 
         <div className="card">
