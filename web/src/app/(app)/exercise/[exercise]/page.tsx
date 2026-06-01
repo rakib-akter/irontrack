@@ -4,10 +4,17 @@ import { getUserId } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { estimateOneRepMax } from "@/lib/strength";
 import { displayExercise, normalizeExercise } from "@/lib/exercises";
+import {
+  prHistory,
+  repMaxes,
+  volumeStats,
+  type ProgressPoint,
+} from "@/lib/progress";
 import LiftChart, { type ChartPoint } from "@/components/LiftChart";
 import CoachPanel from "@/components/CoachPanel";
 import LiftList, { type LiftRow } from "@/components/LiftList";
 import LogLiftForm from "@/components/LogLiftForm";
+import ExerciseStats from "@/components/ExerciseStats";
 
 export const dynamic = "force-dynamic";
 
@@ -65,6 +72,32 @@ export default async function ExercisePage({
       performedAt: l.performedAt.toISOString(),
     }));
 
+  // Progress analytics (PRs, rep maxes, volume).
+  const points: ProgressPoint[] = lifts.map((l) => ({
+    weight: l.weight,
+    reps: l.reps,
+    sets: l.sets,
+    performedAt: l.performedAt,
+  }));
+  const prs = prHistory(points).map((pr) => ({
+    performedAt: pr.performedAt.toISOString(),
+    weight: pr.weight,
+    reps: pr.reps,
+    oneRM: pr.oneRM,
+  }));
+  const maxes = repMaxes(points).map((r) => ({
+    reps: r.reps,
+    weight: r.weight,
+    performedAt: r.performedAt.toISOString(),
+  }));
+  const vol = volumeStats(points);
+  const volumeSummary = {
+    totalVolume: vol.totalVolume,
+    sessions: vol.sessions,
+    bestSessionVolume: vol.bestSession?.volume ?? null,
+    lastSessionVolume: vol.lastSession?.volume ?? null,
+  };
+
   return (
     <div className="space-y-6">
       <div>
@@ -98,6 +131,13 @@ export default async function ExercisePage({
           </div>
         </div>
       </div>
+
+      <ExerciseStats
+        unit={unit}
+        prs={prs}
+        repMaxes={maxes}
+        volume={volumeSummary}
+      />
 
       <div className="card">
         <h2 className="mb-2 font-semibold">History</h2>
