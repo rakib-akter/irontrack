@@ -8,6 +8,7 @@ import {
   prHistory,
   repMaxes,
   volumeStats,
+  volumeOf,
   type ProgressPoint,
 } from "@/lib/progress";
 import LiftChart, { type ChartPoint } from "@/components/LiftChart";
@@ -15,6 +16,7 @@ import CoachPanel from "@/components/CoachPanel";
 import LiftList, { type LiftRow } from "@/components/LiftList";
 import LogLiftForm from "@/components/LogLiftForm";
 import ExerciseStats from "@/components/ExerciseStats";
+import VolumeChart, { type VolumePoint } from "@/components/VolumeChart";
 
 export const dynamic = "force-dynamic";
 
@@ -98,6 +100,23 @@ export default async function ExercisePage({
     lastSessionVolume: vol.lastSession?.volume ?? null,
   };
 
+  // Volume per day for the bar chart.
+  const volByDay = new Map<string, number>();
+  for (const l of lifts) {
+    const day = l.performedAt.toISOString().slice(0, 10);
+    volByDay.set(day, (volByDay.get(day) ?? 0) + volumeOf(l));
+  }
+  const volumeChartData: VolumePoint[] = [...volByDay.entries()]
+    .sort((a, b) => a[0].localeCompare(b[0]))
+    .map(([day, volume]) => ({
+      date: day,
+      volume,
+      label: new Date(`${day}T12:00:00`).toLocaleDateString(undefined, {
+        month: "short",
+        day: "numeric",
+      }),
+    }));
+
   return (
     <div className="space-y-6">
       <div>
@@ -120,6 +139,13 @@ export default async function ExercisePage({
           Estimated 1-rep max over time
         </h2>
         <LiftChart data={chartData} unit={unit} goal={goal1RM} />
+      </div>
+
+      <div className="card">
+        <h2 className="mb-3 text-sm font-medium uppercase tracking-wide text-zinc-400">
+          Training volume over time
+        </h2>
+        <VolumeChart data={volumeChartData} unit={unit} />
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
