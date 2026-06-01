@@ -123,7 +123,7 @@ export default async function ExercisePage({
         <Link href="/dashboard" className="text-sm text-zinc-400 hover:text-zinc-100">
           ← Dashboard
         </Link>
-        <div className="mt-1 flex items-center justify-between">
+        <div className="mt-1 flex flex-wrap items-center justify-between gap-2">
           <h1 className="text-2xl font-bold">{displayExercise(exercise)}</h1>
           <Link
             href={`/goals?exercise=${encodeURIComponent(exercise)}`}

@@ -61,7 +61,8 @@ export default function CoachPanel({ exercise }: { exercise: string }) {
           <p className="mb-3 text-xs text-zinc-400">
             {result.nextSession.warmup}
           </p>
-          <table className="w-full text-sm">
+          <div className="overflow-x-auto">
+          <table className="w-full min-w-[16rem] text-sm">
             <thead>
               <tr className="text-left text-xs uppercase text-zinc-500">
                 <th className="pb-1 font-medium">Sets</th>
@@ -81,6 +82,7 @@ export default function CoachPanel({ exercise }: { exercise: string }) {
               ))}
             </tbody>
           </table>
+          </div>
           <p className="mt-3 text-xs text-zinc-400">
             {result.nextSession.rationale}
           </p>

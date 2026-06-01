@@ -22,18 +22,22 @@ export default function NavBar({ name }: { name: string | null }) {
 
   return (
     <header className="border-b border-zinc-800 bg-zinc-950/80 backdrop-blur">
-      <nav className="mx-auto flex max-w-5xl items-center justify-between px-6 py-3">
-        <Link href="/dashboard" className="font-bold text-emerald-400">
+      <nav className="mx-auto flex max-w-5xl items-center gap-2 px-4 py-3 sm:gap-3 sm:px-6">
+        <Link
+          href="/dashboard"
+          className="shrink-0 font-bold text-emerald-400"
+        >
           IronTrack
         </Link>
-        <div className="flex items-center gap-1">
+        {/* Links scroll horizontally on narrow screens instead of overflowing. */}
+        <div className="flex flex-1 items-center gap-1 overflow-x-auto">
           {links.map((l) => {
             const active = pathname === l.href || pathname.startsWith(l.href + "/");
             return (
               <Link
                 key={l.href}
                 href={l.href}
-                className={`rounded-lg px-3 py-1.5 text-sm transition-colors ${
+                className={`shrink-0 whitespace-nowrap rounded-lg px-2.5 py-1.5 text-sm transition-colors sm:px-3 ${
                   active
                     ? "bg-zinc-800 text-zinc-100"
                     : "text-zinc-400 hover:text-zinc-100"
@@ -43,14 +47,16 @@ export default function NavBar({ name }: { name: string | null }) {
               </Link>
             );
           })}
+        </div>
+        <div className="flex shrink-0 items-center gap-2">
           {name && (
-            <span className="ml-2 hidden text-sm text-zinc-500 sm:inline">
+            <span className="hidden text-sm text-zinc-500 md:inline">
               Hi, {name}
             </span>
           )}
           <button
             onClick={logout}
-            className="ml-2 rounded-lg px-3 py-1.5 text-sm text-zinc-400 hover:text-zinc-100"
+            className="shrink-0 whitespace-nowrap rounded-lg px-2.5 py-1.5 text-sm text-zinc-400 hover:text-zinc-100 sm:px-3"
           >
             Log out
           </button>

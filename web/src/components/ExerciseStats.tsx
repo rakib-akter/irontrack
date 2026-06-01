@@ -85,7 +85,8 @@ export default function ExerciseStats({
           {repMaxes.length === 0 ? (
             <p className="text-sm text-zinc-500">No data yet.</p>
           ) : (
-            <table className="w-full text-sm">
+            <div className="overflow-x-auto">
+            <table className="w-full min-w-[18rem] text-sm">
               <thead>
                 <tr className="text-left text-xs uppercase text-zinc-500">
                   <th className="pb-1 font-medium">Reps</th>
@@ -107,6 +108,7 @@ export default function ExerciseStats({
                 ))}
               </tbody>
             </table>
+            </div>
           )}
         </div>
 
