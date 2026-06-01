@@ -4,6 +4,7 @@ import {
   Area,
   AreaChart,
   CartesianGrid,
+  ReferenceLine,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -19,9 +20,11 @@ export interface BodyWeightPoint {
 export default function BodyWeightChart({
   data,
   unit,
+  goal,
 }: {
   data: BodyWeightPoint[];
   unit: string;
+  goal?: number | null;
 }) {
   if (data.length === 0) {
     return (
@@ -32,8 +35,8 @@ export default function BodyWeightChart({
   }
 
   const values = data.map((d) => d.weight);
-  const min = Math.min(...values);
-  const max = Math.max(...values);
+  const min = Math.min(...values, goal ?? Infinity);
+  const max = Math.max(...values, goal ?? -Infinity);
   const pad = Math.max(2, (max - min) * 0.2);
 
   return (
@@ -72,6 +75,19 @@ export default function BodyWeightChart({
             labelStyle={{ color: "#a1a1aa" }}
             formatter={(v) => [`${Number(v)} ${unit}`, "Body weight"]}
           />
+          {goal ? (
+            <ReferenceLine
+              y={goal}
+              stroke="#fbbf24"
+              strokeDasharray="4 4"
+              label={{
+                value: `Goal ${goal} ${unit}`,
+                fill: "#fbbf24",
+                fontSize: 11,
+                position: "insideTopRight",
+              }}
+            />
+          ) : null}
           <Area
             type="monotone"
             dataKey="weight"
