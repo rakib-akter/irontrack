@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { getUserId } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { estimateOneRepMax } from "@/lib/strength";
@@ -15,7 +16,8 @@ export default async function ExercisePage({
 }: {
   params: Promise<{ exercise: string }>;
 }) {
-  const userId = (await getUserId())!;
+  const userId = await getUserId();
+  if (!userId) redirect("/login");
   const { exercise: raw } = await params;
   const exercise = normalizeExercise(decodeURIComponent(raw));
 

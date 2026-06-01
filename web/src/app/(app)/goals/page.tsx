@@ -1,3 +1,4 @@
+import { redirect } from "next/navigation";
 import { getUserId } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { estimateOneRepMax } from "@/lib/strength";
@@ -12,7 +13,8 @@ export default async function GoalsPage({
 }: {
   searchParams: Promise<{ exercise?: string }>;
 }) {
-  const userId = (await getUserId())!;
+  const userId = await getUserId();
+  if (!userId) redirect("/login");
   const { exercise: prefill } = await searchParams;
 
   const [goals, lifts] = await Promise.all([

@@ -1,3 +1,4 @@
+import { redirect } from "next/navigation";
 import { getUserId } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import BodyWeightChart, {
@@ -11,7 +12,8 @@ import BodyWeightList, {
 export const dynamic = "force-dynamic";
 
 export default async function BodyWeightPage() {
-  const userId = (await getUserId())!;
+  const userId = await getUserId();
+  if (!userId) redirect("/login");
 
   const entries = await prisma.bodyWeightEntry.findMany({
     where: { userId },

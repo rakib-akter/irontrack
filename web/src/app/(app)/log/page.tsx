@@ -1,3 +1,4 @@
+import { redirect } from "next/navigation";
 import { getUserId } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import LogLiftForm from "@/components/LogLiftForm";
@@ -6,7 +7,8 @@ import LiftList, { type LiftRow } from "@/components/LiftList";
 export const dynamic = "force-dynamic";
 
 export default async function LogPage() {
-  const userId = (await getUserId())!;
+  const userId = await getUserId();
+  if (!userId) redirect("/login");
   const lifts = await prisma.liftEntry.findMany({
     where: { userId },
     orderBy: { performedAt: "desc" },

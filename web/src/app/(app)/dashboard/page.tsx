@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { getUserId } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { estimateOneRepMax } from "@/lib/strength";
@@ -7,7 +8,8 @@ import { displayExercise } from "@/lib/exercises";
 export const dynamic = "force-dynamic";
 
 export default async function DashboardPage() {
-  const userId = (await getUserId())!; // layout guarantees auth
+  const userId = await getUserId();
+  if (!userId) redirect("/login");
 
   const [lifts, goals, bodyWeights] = await Promise.all([
     prisma.liftEntry.findMany({
