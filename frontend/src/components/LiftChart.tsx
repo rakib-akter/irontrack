@@ -28,7 +28,7 @@ export default function LiftChart({
 }) {
   if (data.length === 0) {
     return (
-      <div className="flex h-64 items-center justify-center text-sm text-zinc-500">
+      <div className="flex h-64 items-center justify-center text-sm text-fg-subtle">
         No data yet — log a few sessions to see your progress.
       </div>
     );
@@ -45,20 +45,20 @@ export default function LiftChart({
         <AreaChart data={data} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
           <defs>
             <linearGradient id="orm" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#34d399" stopOpacity={0.5} />
-              <stop offset="100%" stopColor="#34d399" stopOpacity={0} />
+              <stop offset="0%" stopColor="var(--accent)" stopOpacity={0.5} />
+              <stop offset="100%" stopColor="var(--accent)" stopOpacity={0} />
             </linearGradient>
           </defs>
-          <CartesianGrid stroke="#27272a" vertical={false} />
+          <CartesianGrid stroke="var(--border)" vertical={false} />
           <XAxis
             dataKey="label"
-            stroke="#71717a"
+            stroke="var(--fg-subtle)"
             tick={{ fontSize: 12 }}
             tickLine={false}
             axisLine={false}
           />
           <YAxis
-            stroke="#71717a"
+            stroke="var(--fg-subtle)"
             tick={{ fontSize: 12 }}
             tickLine={false}
             axisLine={false}
@@ -67,22 +67,22 @@ export default function LiftChart({
           />
           <Tooltip
             contentStyle={{
-              background: "#18181b",
-              border: "1px solid #3f3f46",
-              borderRadius: 8,
+              background: "var(--surface)",
+              border: "1px solid var(--border-strong)",
+              borderRadius: 10, color: "var(--fg)",
               fontSize: 12,
             }}
-            labelStyle={{ color: "#a1a1aa" }}
+            labelStyle={{ color: "var(--fg-muted)" }}
             formatter={(v) => [`${Math.round(Number(v))} ${unit}`, "Est. 1RM"]}
           />
           {goal ? (
             <ReferenceLine
               y={goal}
-              stroke="#fbbf24"
+              stroke="var(--warning)"
               strokeDasharray="4 4"
               label={{
                 value: `Goal ${Math.round(goal)} ${unit}`,
-                fill: "#fbbf24",
+                fill: "var(--warning)",
                 fontSize: 11,
                 position: "insideTopRight",
               }}
@@ -91,10 +91,10 @@ export default function LiftChart({
           <Area
             type="monotone"
             dataKey="oneRM"
-            stroke="#34d399"
+            stroke="var(--accent)"
             strokeWidth={2}
             fill="url(#orm)"
-            dot={{ r: 3, fill: "#34d399" }}
+            dot={{ r: 3, fill: "var(--accent)" }}
           />
         </AreaChart>
       </ResponsiveContainer>

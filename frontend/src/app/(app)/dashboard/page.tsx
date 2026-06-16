@@ -77,21 +77,21 @@ export default async function DashboardPage() {
       <div className="grid gap-4 sm:grid-cols-3">
         <Link
           href="/bodyweight"
-          className="card transition-colors hover:border-blue-600"
+          className="card transition-colors hover:border-accent"
         >
-          <p className="text-xs uppercase tracking-wide text-zinc-400">
+          <p className="text-xs uppercase tracking-wide text-fg-muted">
             Body weight
           </p>
-          <p className="mt-1 text-3xl font-bold text-blue-400">
+          <p className="mt-1 text-3xl font-bold text-accent">
             {currentBW ? `${currentBW.weight} ${currentBW.unit}` : "—"}
           </p>
-          <p className="mt-1 text-xs text-zinc-500">
+          <p className="mt-1 text-xs text-fg-subtle">
             {bwChange === null
               ? "Log your weight to start tracking"
               : `${bwChange > 0 ? "+" : ""}${Math.round(bwChange * 10) / 10} ${currentBW?.unit} since start`}
           </p>
           {bwGoal && (
-            <p className="mt-2 text-xs font-medium text-amber-400">
+            <p className="mt-2 text-xs font-medium text-warning">
               {bwToGoal === null
                 ? `Goal ${bwGoal.targetWeight} ${bwGoal.unit}`
                 : bwToGoal === 0
@@ -102,22 +102,22 @@ export default async function DashboardPage() {
         </Link>
 
         <div className="card">
-          <p className="text-xs uppercase tracking-wide text-zinc-400">
+          <p className="text-xs uppercase tracking-wide text-fg-muted">
             Exercises tracked
           </p>
           <p className="mt-1 text-3xl font-bold">{exercises.length}</p>
-          <p className="mt-1 text-xs text-zinc-500">
+          <p className="mt-1 text-xs text-fg-subtle">
             {lifts.length} total set{lifts.length === 1 ? "" : "s"} logged
           </p>
         </div>
 
         <div className="card">
-          <p className="text-xs uppercase tracking-wide text-zinc-400">
+          <p className="text-xs uppercase tracking-wide text-fg-muted">
             Active goals
           </p>
           <p className="mt-1 text-3xl font-bold">{goals.length}</p>
-          <p className="mt-1 text-xs text-zinc-500">
-            <Link href="/goals" className="text-emerald-400 hover:underline">
+          <p className="mt-1 text-xs text-fg-subtle">
+            <Link href="/goals" className="text-accent hover:underline">
               Manage goals →
             </Link>
           </p>
@@ -134,7 +134,7 @@ export default async function DashboardPage() {
         </div>
 
         {exercises.length === 0 ? (
-          <div className="card text-center text-zinc-400">
+          <div className="card text-center text-fg-muted">
             <p className="text-lg">No lifts logged yet.</p>
             <p className="mt-1 text-sm">
               Log your first set and your strength graph starts building.
@@ -157,36 +157,36 @@ export default async function DashboardPage() {
                 <Link
                   key={key}
                   href={`/exercise/${encodeURIComponent(key)}`}
-                  className="card transition-colors hover:border-emerald-600"
+                  className="card transition-colors hover:border-accent"
                 >
                   <div className="flex items-baseline justify-between">
                     <h2 className="text-lg font-semibold">
                       {displayExercise(key)}
                     </h2>
-                    <span className="text-xs text-zinc-500">
+                    <span className="text-xs text-fg-subtle">
                       {s.count} session{s.count === 1 ? "" : "s"}
                     </span>
                   </div>
-                  <p className="mt-2 text-3xl font-bold text-emerald-400">
+                  <p className="mt-2 text-3xl font-bold text-accent">
                     {Math.round(s.best1RM)}{" "}
-                    <span className="text-base font-normal text-zinc-400">
+                    <span className="text-base font-normal text-fg-muted">
                       {s.unit} est. 1RM
                     </span>
                   </p>
-                  <p className="mt-1 text-xs text-zinc-500">
+                  <p className="mt-1 text-xs text-fg-subtle">
                     Last lifted: {s.latestWeight} {s.unit} × {s.latestReps}
                   </p>
                   {pct !== null && goal && (
                     <div className="mt-3">
-                      <div className="mb-1 flex justify-between text-xs text-zinc-400">
+                      <div className="mb-1 flex justify-between text-xs text-fg-muted">
                         <span>
                           Goal: {goal.targetWeight} {goal.unit}
                         </span>
                         <span>{pct}%</span>
                       </div>
-                      <div className="h-2 overflow-hidden rounded-full bg-zinc-800">
+                      <div className="h-2 overflow-hidden rounded-full bg-surface-2">
                         <div
-                          className="h-full rounded-full bg-emerald-500"
+                          className="h-full rounded-full bg-accent"
                           style={{ width: `${pct}%` }}
                         />
                       </div>

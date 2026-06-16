@@ -119,7 +119,7 @@ export default function GoalForm({
       </div>
 
       {error && (
-        <p className="rounded-lg bg-red-500/10 px-3 py-2 text-sm text-red-400">
+        <p className="rounded-lg bg-danger/10 px-3 py-2 text-sm text-danger">
           {error}
         </p>
       )}
@@ -127,7 +127,7 @@ export default function GoalForm({
       <button type="submit" className="btn-primary w-full" disabled={loading}>
         {loading ? "Saving…" : "Save goal"}
       </button>
-      <p className="text-xs text-zinc-500">
+      <p className="text-xs text-fg-subtle">
         Targeting more than 1 rep (e.g. 225 × 5) sets a goal based on the
         equivalent 1-rep max.
       </p>

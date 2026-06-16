@@ -67,24 +67,24 @@ export default async function BodyWeightPage() {
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <div className="card">
-          <p className="text-xs uppercase tracking-wide text-zinc-400">Current</p>
-          <p className="mt-1 text-3xl font-bold text-blue-400">
+          <p className="text-xs uppercase tracking-wide text-fg-muted">Current</p>
+          <p className="mt-1 text-3xl font-bold text-accent">
             {current !== null ? `${current} ${unit}` : "—"}
           </p>
         </div>
         <div className="card">
-          <p className="text-xs uppercase tracking-wide text-zinc-400">
+          <p className="text-xs uppercase tracking-wide text-fg-muted">
             Change since start
           </p>
           <p
             className={`mt-1 text-3xl font-bold ${
               change === null
-                ? "text-zinc-500"
+                ? "text-fg-subtle"
                 : change > 0
-                  ? "text-emerald-400"
+                  ? "text-accent"
                   : change < 0
-                    ? "text-amber-400"
-                    : "text-zinc-200"
+                    ? "text-warning"
+                    : "text-fg"
             }`}
           >
             {change === null
@@ -93,28 +93,28 @@ export default async function BodyWeightPage() {
           </p>
         </div>
         <div className="card">
-          <p className="text-xs uppercase tracking-wide text-zinc-400">
+          <p className="text-xs uppercase tracking-wide text-fg-muted">
             To goal
           </p>
           {goal && toGoal !== null ? (
             <>
-              <p className="mt-1 text-3xl font-bold text-amber-400">
+              <p className="mt-1 text-3xl font-bold text-warning">
                 {toGoal === 0
                   ? "Reached 🎉"
                   : `${Math.abs(toGoal)} ${unit}`}
               </p>
-              <p className="mt-1 text-xs text-zinc-500">
+              <p className="mt-1 text-xs text-fg-subtle">
                 {toGoal === 0
                   ? `Target ${goal.targetWeight} ${unit}`
                   : `to ${toGoal < 0 ? "lose" : "gain"} → ${goal.targetWeight} ${unit}`}
               </p>
             </>
           ) : (
-            <p className="mt-1 text-3xl font-bold text-zinc-500">—</p>
+            <p className="mt-1 text-3xl font-bold text-fg-subtle">—</p>
           )}
         </div>
         <div className="card">
-          <p className="text-xs uppercase tracking-wide text-zinc-400">
+          <p className="text-xs uppercase tracking-wide text-fg-muted">
             Measurements
           </p>
           <p className="mt-1 text-3xl font-bold">{entries.length}</p>
@@ -122,7 +122,7 @@ export default async function BodyWeightPage() {
       </div>
 
       <div className="card">
-        <h2 className="mb-3 text-sm font-medium uppercase tracking-wide text-zinc-400">
+        <h2 className="mb-3 text-sm font-medium uppercase tracking-wide text-fg-muted">
           Weight over time
         </h2>
         <BodyWeightChart

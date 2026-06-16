@@ -77,11 +77,11 @@ export default function VolumeGoalCard({
   return (
     <div className="card space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-sm font-medium uppercase tracking-wide text-zinc-400">
+        <h2 className="text-sm font-medium uppercase tracking-wide text-fg-muted">
           Weekly volume goal
         </h2>
         {target !== null && (
-          <span className="text-xs text-zinc-500">
+          <span className="text-xs text-fg-subtle">
             {reached ? "✅ reached" : `${pct}%`}
           </span>
         )}
@@ -90,22 +90,22 @@ export default function VolumeGoalCard({
       {target !== null ? (
         <div>
           <div className="mb-1 flex justify-between text-sm">
-            <span className={reached ? "text-emerald-400" : "text-zinc-200"}>
+            <span className={reached ? "text-accent" : "text-fg"}>
               {fmt(weekVolume)} {unit}
             </span>
-            <span className="text-zinc-500">
+            <span className="text-fg-subtle">
               of {fmt(target)} {unit} this week
             </span>
           </div>
-          <div className="h-2.5 overflow-hidden rounded-full bg-zinc-800">
+          <div className="h-2.5 overflow-hidden rounded-full bg-surface-2">
             <div
-              className={`h-full rounded-full ${reached ? "bg-emerald-500" : "bg-violet-500"}`}
+              className={`h-full rounded-full ${reached ? "bg-accent" : "bg-accent"}`}
               style={{ width: `${pct ?? 0}%` }}
             />
           </div>
         </div>
       ) : (
-        <p className="text-sm text-zinc-500">
+        <p className="text-sm text-fg-subtle">
           Set a weekly volume target to track how much work you put in each week
           (you&apos;ve done {fmt(weekVolume)} {unit} so far this week).
         </p>
@@ -139,7 +139,7 @@ export default function VolumeGoalCard({
         </div>
 
         {error && (
-          <p className="rounded-lg bg-red-500/10 px-3 py-2 text-sm text-red-400">
+          <p className="rounded-lg bg-danger/10 px-3 py-2 text-sm text-danger">
             {error}
           </p>
         )}

@@ -48,7 +48,7 @@ export default function ExerciseStats({
     <div className="space-y-6">
       {/* Volume */}
       <div className="card">
-        <h2 className="mb-3 text-sm font-medium uppercase tracking-wide text-zinc-400">
+        <h2 className="mb-3 text-sm font-medium uppercase tracking-wide text-fg-muted">
           Volume
         </h2>
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
@@ -71,7 +71,7 @@ export default function ExerciseStats({
             }
           />
         </div>
-        <p className="mt-3 text-xs text-zinc-500">
+        <p className="mt-3 text-xs text-fg-subtle">
           Volume = weight × reps × sets, summed across each session.
         </p>
       </div>
@@ -79,16 +79,16 @@ export default function ExerciseStats({
       <div className="grid gap-6 md:grid-cols-2">
         {/* Rep maxes */}
         <div className="card">
-          <h2 className="mb-3 text-sm font-medium uppercase tracking-wide text-zinc-400">
+          <h2 className="mb-3 text-sm font-medium uppercase tracking-wide text-fg-muted">
             Rep maxes
           </h2>
           {repMaxes.length === 0 ? (
-            <p className="text-sm text-zinc-500">No data yet.</p>
+            <p className="text-sm text-fg-subtle">No data yet.</p>
           ) : (
             <div className="overflow-x-auto">
             <table className="w-full min-w-[18rem] text-sm">
               <thead>
-                <tr className="text-left text-xs uppercase text-zinc-500">
+                <tr className="text-left text-xs uppercase text-fg-subtle">
                   <th className="pb-1 font-medium">Reps</th>
                   <th className="pb-1 font-medium">Best weight</th>
                   <th className="pb-1 font-medium">When</th>
@@ -96,12 +96,12 @@ export default function ExerciseStats({
               </thead>
               <tbody>
                 {repMaxes.map((r) => (
-                  <tr key={r.reps} className="border-t border-zinc-800">
+                  <tr key={r.reps} className="border-t border-border">
                     <td className="py-1.5">{r.reps}</td>
-                    <td className="py-1.5 font-medium text-zinc-100">
+                    <td className="py-1.5 font-medium text-fg">
                       {r.weight} {unit}
                     </td>
-                    <td className="py-1.5 text-zinc-500">
+                    <td className="py-1.5 text-fg-subtle">
                       {shortDate(r.performedAt)}
                     </td>
                   </tr>
@@ -114,11 +114,11 @@ export default function ExerciseStats({
 
         {/* PR history */}
         <div className="card">
-          <h2 className="mb-3 text-sm font-medium uppercase tracking-wide text-zinc-400">
+          <h2 className="mb-3 text-sm font-medium uppercase tracking-wide text-fg-muted">
             PR history (estimated 1RM)
           </h2>
           {prs.length === 0 ? (
-            <p className="text-sm text-zinc-500">No PRs yet.</p>
+            <p className="text-sm text-fg-subtle">No PRs yet.</p>
           ) : (
             <ol className="space-y-2">
               {prs.map((pr, i) => (
@@ -126,15 +126,15 @@ export default function ExerciseStats({
                   key={`${pr.performedAt}-${i}`}
                   className="flex items-center justify-between text-sm"
                 >
-                  <span className="text-zinc-300">
-                    <span className="font-semibold text-emerald-400">
+                  <span className="text-fg">
+                    <span className="font-semibold text-accent">
                       {Math.round(pr.oneRM)} {unit}
                     </span>{" "}
-                    <span className="text-zinc-500">
+                    <span className="text-fg-subtle">
                       ({pr.weight} × {pr.reps})
                     </span>
                   </span>
-                  <span className="text-xs text-zinc-500">
+                  <span className="text-xs text-fg-subtle">
                     {shortDate(pr.performedAt)}
                     {i === 0 ? " · current" : ""}
                   </span>
@@ -151,7 +151,7 @@ export default function ExerciseStats({
 function Stat({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <p className="text-xs uppercase tracking-wide text-zinc-500">{label}</p>
+      <p className="text-xs uppercase tracking-wide text-fg-subtle">{label}</p>
       <p className="mt-1 text-xl font-bold">{value}</p>
     </div>
   );

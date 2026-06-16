@@ -1,21 +1,11 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import "@fontsource-variable/inter";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
 export const metadata: Metadata = {
-  title: "IronTrack — Gym Progress & AI Coach",
+  title: "STRATUM — AI Strength, Nutrition & Recomposition",
   description:
-    "Track your lifts, watch your strength climb, and get AI coaching to hit your goals.",
+    "Get stronger, build muscle, and improve body composition with an AI coach that explains every recommendation — and cites the research.",
 };
 
 export default function RootLayout({
@@ -24,12 +14,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
-      </body>
+    <html lang="en" suppressHydrationWarning>
+      <body>{children}</body>
     </html>
   );
 }

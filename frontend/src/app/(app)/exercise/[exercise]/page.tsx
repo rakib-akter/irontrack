@@ -129,7 +129,7 @@ export default async function ExercisePage({
   return (
     <div className="space-y-6">
       <div>
-        <Link href="/dashboard" className="text-sm text-zinc-400 hover:text-zinc-100">
+        <Link href="/dashboard" className="text-sm text-fg-muted hover:text-fg">
           ← Dashboard
         </Link>
         <div className="mt-1 flex flex-wrap items-center justify-between gap-2">
@@ -144,7 +144,7 @@ export default async function ExercisePage({
       </div>
 
       <div className="card">
-        <h2 className="mb-3 text-sm font-medium uppercase tracking-wide text-zinc-400">
+        <h2 className="mb-3 text-sm font-medium uppercase tracking-wide text-fg-muted">
           Estimated 1-rep max over time
         </h2>
         <LiftChart data={chartData} unit={unit} goal={goal1RM} />
@@ -152,7 +152,7 @@ export default async function ExercisePage({
 
       <div className="grid gap-6 md:grid-cols-2">
         <div className="card">
-          <h2 className="mb-3 text-sm font-medium uppercase tracking-wide text-zinc-400">
+          <h2 className="mb-3 text-sm font-medium uppercase tracking-wide text-fg-muted">
             Training volume over time
           </h2>
           <VolumeChart data={volumeChartData} unit={unit} />

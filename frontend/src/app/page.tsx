@@ -8,17 +8,17 @@ export default async function Home() {
 
   return (
     <main className="mx-auto flex min-h-screen max-w-3xl flex-col items-center justify-center gap-8 px-6 text-center">
-      <div className="space-y-4">
-        <p className="text-sm font-semibold uppercase tracking-widest text-emerald-400">
-          IronTrack
+      <div className="space-y-5">
+        <p className="text-sm font-semibold uppercase tracking-[0.25em] text-accent">
+          STRATUM
         </p>
-        <h1 className="text-4xl font-bold sm:text-5xl">
-          Get stronger, with proof.
+        <h1 className="text-4xl font-bold tracking-tight sm:text-6xl">
+          Train by the evidence.
         </h1>
-        <p className="mx-auto max-w-xl text-lg text-zinc-400">
-          Log every lift, watch your estimated 1-rep max climb on a graph, and
-          let an AI coach prescribe exactly what to do next session to hit your
-          goal — like that 315&nbsp;lb bench.
+        <p className="mx-auto max-w-xl text-lg text-fg-muted">
+          Get stronger, build muscle, and dial in your nutrition with an AI
+          coach that explains every recommendation — and cites the research
+          behind it.
         </p>
       </div>
       <div className="flex gap-3">
@@ -31,21 +31,23 @@ export default async function Home() {
       </div>
       <ul className="mt-6 grid gap-4 text-left sm:grid-cols-3">
         <li className="card">
-          <h3 className="font-semibold text-emerald-400">📈 Track progress</h3>
-          <p className="mt-1 text-sm text-zinc-400">
-            Every set you log feeds a strength-over-time graph.
+          <h3 className="font-semibold">Strength intelligence</h3>
+          <p className="mt-1 text-sm text-fg-muted">
+            1RM, volume, fatigue, plateau detection, and projected PRs from
+            every set.
           </p>
         </li>
         <li className="card">
-          <h3 className="font-semibold text-emerald-400">🎯 Set goals</h3>
-          <p className="mt-1 text-sm text-zinc-400">
-            Name a target weight and see how close you are.
+          <h3 className="font-semibold">Nutrition OS</h3>
+          <p className="mt-1 text-sm text-fg-muted">
+            Macros, fiber, and a full micronutrient panel — with AI meal
+            parsing.
           </p>
         </li>
         <li className="card">
-          <h3 className="font-semibold text-emerald-400">🤖 AI coaching</h3>
-          <p className="mt-1 text-sm text-zinc-400">
-            Get feedback and next-session rep goals to close the gap.
+          <h3 className="font-semibold">Evidence-based coaching</h3>
+          <p className="mt-1 text-sm text-fg-muted">
+            Weekly plans with confidence scores, reasoning, and real citations.
           </p>
         </li>
       </ul>

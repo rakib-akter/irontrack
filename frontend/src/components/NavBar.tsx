@@ -21,13 +21,13 @@ export default function NavBar({ name }: { name: string | null }) {
   }
 
   return (
-    <header className="border-b border-zinc-800 bg-zinc-950/80 backdrop-blur">
+    <header className="border-b border-border bg-surface/80 backdrop-blur">
       <nav className="mx-auto flex max-w-5xl items-center gap-2 px-4 py-3 sm:gap-3 sm:px-6">
         <Link
           href="/dashboard"
-          className="shrink-0 font-bold text-emerald-400"
+          className="shrink-0 font-bold text-accent"
         >
-          IronTrack
+          STRATUM
         </Link>
         {/* Links scroll horizontally on narrow screens instead of overflowing. */}
         <div className="flex flex-1 items-center gap-1 overflow-x-auto">
@@ -39,8 +39,8 @@ export default function NavBar({ name }: { name: string | null }) {
                 href={l.href}
                 className={`shrink-0 whitespace-nowrap rounded-lg px-2.5 py-1.5 text-sm transition-colors sm:px-3 ${
                   active
-                    ? "bg-zinc-800 text-zinc-100"
-                    : "text-zinc-400 hover:text-zinc-100"
+                    ? "bg-surface-2 text-fg"
+                    : "text-fg-muted hover:text-fg"
                 }`}
               >
                 {l.label}
@@ -50,13 +50,13 @@ export default function NavBar({ name }: { name: string | null }) {
         </div>
         <div className="flex shrink-0 items-center gap-2">
           {name && (
-            <span className="hidden text-sm text-zinc-500 md:inline">
+            <span className="hidden text-sm text-fg-subtle md:inline">
               Hi, {name}
             </span>
           )}
           <button
             onClick={logout}
-            className="shrink-0 whitespace-nowrap rounded-lg px-2.5 py-1.5 text-sm text-zinc-400 hover:text-zinc-100 sm:px-3"
+            className="shrink-0 whitespace-nowrap rounded-lg px-2.5 py-1.5 text-sm text-fg-muted hover:text-fg sm:px-3"
           >
             Log out
           </button>

@@ -1,44 +1,113 @@
 @import "tailwindcss";
 
+/* Manual dark mode via a `.dark` class on <html>. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ── Light theme (default): off-white + graphite, muted electric blue ── */
 :root {
-  --background: #0a0a0b;
-  --foreground: #ededed;
+  --bg: #faf9f7;
+  --surface: #ffffff;
+  --surface-2: #f1f0ec;
+  --fg: #191c20;
+  --fg-muted: #5d626b;
+  --fg-subtle: #9699a3;
+  --border: rgba(25, 28, 32, 0.09);
+  --border-strong: rgba(25, 28, 32, 0.16);
+  --accent: #2f6fe0;
+  --accent-hover: #2459c2;
+  --accent-fg: #ffffff;
+  --accent-weak: rgba(47, 111, 224, 0.1);
+  --positive: #2f9e68;
+  --warning: #b87514;
+  --danger: #cf4036;
+  --shadow: 0 1px 2px rgba(25, 28, 32, 0.04), 0 8px 24px rgba(25, 28, 32, 0.05);
+}
+
+/* ── Dark theme: graphite + brighter electric blue ── */
+.dark {
+  --bg: #0e0f12;
+  --surface: #16181d;
+  --surface-2: #20242b;
+  --fg: #eceef1;
+  --fg-muted: #9aa1ab;
+  --fg-subtle: #6a7079;
+  --border: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.15);
+  --accent: #5b8dff;
+  --accent-hover: #7299ff;
+  --accent-fg: #0b0e14;
+  --accent-weak: rgba(91, 141, 255, 0.14);
+  --positive: #46c98a;
+  --warning: #e0a33a;
+  --danger: #f06a60;
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 12px 32px rgba(0, 0, 0, 0.35);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-fg: var(--fg);
+  --color-fg-muted: var(--fg-muted);
+  --color-fg-subtle: var(--fg-subtle);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-fg: var(--accent-fg);
+  --color-accent-weak: var(--accent-weak);
+  --color-positive: var(--positive);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, -apple-system, sans-serif;
+}
+
+* {
+  border-color: var(--border);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
   min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
-/* Shared component classes so pages stay readable. In Tailwind v4 `@apply`
-   only accepts built-in utilities, so each button lists its utilities directly
-   instead of @apply-ing the custom `.btn` class. */
+/* Premium component primitives. Tailwind v4 @apply accepts the generated
+   semantic utilities (bg-surface, text-fg-muted, …). */
 @layer components {
   .card {
-    @apply rounded-xl border border-zinc-800 bg-zinc-900/60 p-5;
+    @apply rounded-2xl border border-border bg-surface p-5;
+    box-shadow: var(--shadow);
+  }
+  .glass {
+    @apply rounded-2xl border border-border;
+    background: color-mix(in srgb, var(--surface) 72%, transparent);
+    backdrop-filter: blur(12px);
   }
   .btn {
-    @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2 text-sm font-medium transition-all duration-150 disabled:cursor-not-allowed disabled:opacity-50;
   }
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed bg-emerald-500 text-zinc-950 hover:bg-emerald-400;
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2 text-sm font-medium text-accent-fg transition-all duration-150 disabled:cursor-not-allowed disabled:opacity-50;
+    background: var(--accent);
+  }
+  .btn-primary:hover:not(:disabled) {
+    background: var(--accent-hover);
   }
   .btn-ghost {
-    @apply inline-flex items-center justify-center gap-2 rounded-lg border border-zinc-700 px-4 py-2 text-sm font-medium text-zinc-200 transition-colors hover:bg-zinc-800 disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply inline-flex items-center justify-center gap-2 rounded-xl border border-border bg-surface px-4 py-2 text-sm font-medium text-fg transition-all duration-150 hover:bg-surface-2 disabled:cursor-not-allowed disabled:opacity-50;
   }
   .input {
-    @apply w-full rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2 text-sm text-zinc-100 outline-none placeholder:text-zinc-500 focus:border-emerald-500;
+    @apply w-full rounded-xl border border-border bg-surface px-3 py-2 text-sm text-fg outline-none transition-colors placeholder:text-fg-subtle;
+  }
+  .input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-weak);
   }
   .label {
-    @apply mb-1 block text-xs font-medium uppercase tracking-wide text-zinc-400;
+    @apply mb-1 block text-xs font-medium uppercase tracking-wide text-fg-muted;
   }
 }

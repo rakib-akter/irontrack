@@ -32,7 +32,7 @@ export default function GoalList({ goals }: { goals: GoalRow[] }) {
 
   if (goals.length === 0) {
     return (
-      <p className="text-sm text-zinc-500">
+      <p className="text-sm text-fg-subtle">
         No goals yet. Set one to get tailored coaching.
       </p>
     );
@@ -46,11 +46,11 @@ export default function GoalList({ goals }: { goals: GoalRow[] }) {
             <div>
               <Link
                 href={`/exercise/${encodeURIComponent(g.exercise)}`}
-                className="font-semibold hover:text-emerald-400"
+                className="font-semibold hover:text-accent"
               >
                 {displayExercise(g.exercise)}
               </Link>
-              <p className="text-sm text-zinc-400">
+              <p className="text-sm text-fg-muted">
                 Target: {g.targetWeight} {g.unit}
                 {g.targetReps > 1 ? ` × ${g.targetReps}` : ""}
                 {g.targetDate
@@ -61,14 +61,14 @@ export default function GoalList({ goals }: { goals: GoalRow[] }) {
             <button
               onClick={() => remove(g.id)}
               disabled={deletingId === g.id}
-              className="rounded-lg px-2 py-1 text-xs text-zinc-500 hover:bg-zinc-800 hover:text-red-400 disabled:opacity-50"
+              className="rounded-lg px-2 py-1 text-xs text-fg-subtle hover:bg-surface-2 hover:text-danger disabled:opacity-50"
             >
               {deletingId === g.id ? "…" : "Remove"}
             </button>
           </div>
           {g.percent !== null && (
             <div className="mt-3">
-              <div className="mb-1 flex justify-between text-xs text-zinc-400">
+              <div className="mb-1 flex justify-between text-xs text-fg-muted">
                 <span>
                   {g.best1RM !== null
                     ? `Now ~${Math.round(g.best1RM)} ${g.unit} 1RM`
@@ -76,9 +76,9 @@ export default function GoalList({ goals }: { goals: GoalRow[] }) {
                 </span>
                 <span>{g.percent}%</span>
               </div>
-              <div className="h-2 overflow-hidden rounded-full bg-zinc-800">
+              <div className="h-2 overflow-hidden rounded-full bg-surface-2">
                 <div
-                  className="h-full rounded-full bg-emerald-500"
+                  className="h-full rounded-full bg-accent"
                   style={{ width: `${g.percent}%` }}
                 />
               </div>

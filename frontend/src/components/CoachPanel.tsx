@@ -27,12 +27,12 @@ export default function CoachPanel({ exercise }: { exercise: string }) {
 
   if (loading)
     return (
-      <div className="card animate-pulse text-sm text-zinc-500">
+      <div className="card animate-pulse text-sm text-fg-subtle">
         Analyzing your training…
       </div>
     );
   if (error)
-    return <div className="card text-sm text-red-400">{error}</div>;
+    return <div className="card text-sm text-danger">{error}</div>;
   if (!result) return null;
 
   return (
@@ -43,10 +43,10 @@ export default function CoachPanel({ exercise }: { exercise: string }) {
       </div>
 
       {result.feedback.length > 0 && (
-        <ul className="space-y-2 text-sm text-zinc-200">
+        <ul className="space-y-2 text-sm text-fg">
           {result.feedback.map((f, i) => (
             <li key={i} className="flex gap-2">
-              <span className="text-emerald-400">•</span>
+              <span className="text-accent">•</span>
               <span>{f}</span>
             </li>
           ))}
@@ -54,17 +54,17 @@ export default function CoachPanel({ exercise }: { exercise: string }) {
       )}
 
       {result.nextSession && (
-        <div className="rounded-lg border border-zinc-800 bg-zinc-950/60 p-4">
-          <h3 className="mb-2 text-sm font-semibold text-emerald-400">
+        <div className="rounded-lg border border-border bg-surface-2 p-4">
+          <h3 className="mb-2 text-sm font-semibold text-accent">
             Next session plan
           </h3>
-          <p className="mb-3 text-xs text-zinc-400">
+          <p className="mb-3 text-xs text-fg-muted">
             {result.nextSession.warmup}
           </p>
           <div className="overflow-x-auto">
           <table className="w-full min-w-[16rem] text-sm">
             <thead>
-              <tr className="text-left text-xs uppercase text-zinc-500">
+              <tr className="text-left text-xs uppercase text-fg-subtle">
                 <th className="pb-1 font-medium">Sets</th>
                 <th className="pb-1 font-medium">Weight</th>
                 <th className="pb-1 font-medium">Reps</th>
@@ -72,9 +72,9 @@ export default function CoachPanel({ exercise }: { exercise: string }) {
             </thead>
             <tbody>
               {result.nextSession.workingSets.map((s, i) => (
-                <tr key={i} className="border-t border-zinc-800">
+                <tr key={i} className="border-t border-border">
                   <td className="py-1.5">{s.sets}</td>
-                  <td className="py-1.5 font-medium text-zinc-100">
+                  <td className="py-1.5 font-medium text-fg">
                     {s.weight}
                   </td>
                   <td className="py-1.5">{s.reps}</td>
@@ -83,7 +83,7 @@ export default function CoachPanel({ exercise }: { exercise: string }) {
             </tbody>
           </table>
           </div>
-          <p className="mt-3 text-xs text-zinc-400">
+          <p className="mt-3 text-xs text-fg-muted">
             {result.nextSession.rationale}
           </p>
         </div>

@@ -37,11 +37,11 @@ export default function LiftList({
   }
 
   if (lifts.length === 0) {
-    return <p className="text-sm text-zinc-500">No lifts logged yet.</p>;
+    return <p className="text-sm text-fg-subtle">No lifts logged yet.</p>;
   }
 
   return (
-    <ul className="divide-y divide-zinc-800">
+    <ul className="divide-y divide-border">
       {lifts.map((l) => (
         <li key={l.id} className="flex items-center justify-between py-3">
           <div>
@@ -52,7 +52,7 @@ export default function LiftList({
               {l.weight} {l.unit} × {l.reps}
               {l.sets > 1 ? ` (${l.sets} sets)` : ""}
             </p>
-            <p className="text-xs text-zinc-500">
+            <p className="text-xs text-fg-subtle">
               {new Date(l.performedAt).toLocaleDateString()} · est. 1RM{" "}
               {Math.round(estimateOneRepMax(l.weight, l.reps))} {l.unit}
               {l.notes ? ` · ${l.notes}` : ""}
@@ -61,7 +61,7 @@ export default function LiftList({
           <button
             onClick={() => remove(l.id)}
             disabled={deletingId === l.id}
-            className="rounded-lg px-2 py-1 text-xs text-zinc-500 hover:bg-zinc-800 hover:text-red-400 disabled:opacity-50"
+            className="rounded-lg px-2 py-1 text-xs text-fg-subtle hover:bg-surface-2 hover:text-danger disabled:opacity-50"
             aria-label="Delete lift"
           >
             {deletingId === l.id ? "…" : "Delete"}

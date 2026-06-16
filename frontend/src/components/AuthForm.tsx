@@ -47,7 +47,7 @@ export default function AuthForm({ mode }: { mode: "login" | "signup" }) {
           <h1 className="text-2xl font-bold">
             {isSignup ? "Create your account" : "Welcome back"}
           </h1>
-          <p className="text-sm text-zinc-400">
+          <p className="text-sm text-fg-muted">
             {isSignup
               ? "Start tracking your lifts in seconds."
               : "Log in to see your progress."}
@@ -93,7 +93,7 @@ export default function AuthForm({ mode }: { mode: "login" | "signup" }) {
           </div>
 
           {error && (
-            <p className="rounded-lg bg-red-500/10 px-3 py-2 text-sm text-red-400">
+            <p className="rounded-lg bg-danger/10 px-3 py-2 text-sm text-danger">
               {error}
             </p>
           )}
@@ -107,18 +107,18 @@ export default function AuthForm({ mode }: { mode: "login" | "signup" }) {
           </button>
         </form>
 
-        <p className="text-center text-sm text-zinc-400">
+        <p className="text-center text-sm text-fg-muted">
           {isSignup ? (
             <>
               Already have an account?{" "}
-              <Link href="/login" className="text-emerald-400 hover:underline">
+              <Link href="/login" className="text-accent hover:underline">
                 Log in
               </Link>
             </>
           ) : (
             <>
               New here?{" "}
-              <Link href="/signup" className="text-emerald-400 hover:underline">
+              <Link href="/signup" className="text-accent hover:underline">
                 Create an account
               </Link>
             </>
