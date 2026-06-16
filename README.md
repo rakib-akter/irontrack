@@ -1,82 +1,67 @@
-# IronTrack — Gym Progress Tracker + AI Coach
+# STRATUM
 
-Track your lifts, watch your estimated 1-rep max climb on a graph, set strength
-goals (e.g. a 315 lb bench), and get AI-style coaching with a concrete plan for
-your next session.
+**AI Strength + Nutrition + Body Recomposition Platform.**
 
-This repo is a monorepo so a mobile app can be added later:
+STRATUM helps people get stronger, build muscle, improve body composition, eat
+optimally, and — crucially — understand *why* every recommendation is made.
+Every AI suggestion ships with a confidence score, plain‑language reasoning, and
+citations drawn from a local research database (never hallucinated).
+
+It is built as a monorepo with a clear service split:
 
 ```
-Health app/
-└── web/      → Next.js full-stack web app (UI + API)
+stratum/
+├── frontend/    Next.js 15 (App Router) · TypeScript · Tailwind · Framer Motion · Recharts
+│   └── prisma/  Schema + migrations — single source of truth for the database
+├── backend/     FastAPI — AI gateway (OpenRouter, free-first + fallback), research
+│                retrieval/citations, heavy analytics endpoints
+├── analytics/   Python package — strength & nutrition models (Epley, Brzycki, RIR,
+│                rolling averages, plateau detection). Pure, tested, reusable.
+├── research/    Curated research summaries → embeddings (pgvector) → citation engine
+├── shared/      Cross-cutting contracts shared by frontend & backend
+└── docs/        Architecture, roadmap, data model, API reference
 ```
 
-## Features
+**Data flow**
 
-- **Auth** — email/password sign up & log in (sessions in a signed httpOnly cookie).
-- **Log lifts** — exercise, weight, reps, sets, unit (lb/kg), date, notes.
-- **Progress graphs** — estimated 1-rep max (Epley formula) over time per lift,
-  with your goal drawn as a reference line.
-- **Goals** — set a target weight (and rep count) per lift; see % progress.
-- **AI Coach** — analyzes your history vs. your goal and returns feedback plus a
-  prescribed next-session plan (warm-up + working sets + rationale) to close the
-  gap. Today this is a deterministic, rule-based engine (no API key needed); it
-  lives behind a `Coach` interface so a real LLM (Claude/OpenAI) can be dropped
-  in by editing a single file — see `web/src/lib/coach/index.ts`.
+```
+Browser ─▶ Next.js (Prisma CRUD, Supabase Auth) ─▶ Supabase Postgres
+               └────────▶ FastAPI (AI · research · analytics) ─▶ Supabase Postgres
+```
 
-## Tech stack
+Next.js owns transactional CRUD via Prisma. FastAPI is a stateless intelligence
+service: it validates the Supabase JWT, runs the analytics models, performs
+research retrieval, and calls LLMs through an OpenRouter‑compatible gateway with
+free models first and graceful fallback (including a rule‑based mode that needs
+no API key).
 
-- Next.js 15 (App Router) + React 19 + TypeScript
-- Tailwind CSS v4
-- Prisma ORM → Postgres (Supabase)
-- Recharts for graphs
-- jose (JWT sessions) + bcryptjs (password hashing) + zod (validation)
+## Status
 
-## Setup
+Actively being built in phases — see [docs/ROADMAP.md](docs/ROADMAP.md). The app
+is kept functional at every step. Architecture and the strength/analytics engine
+come first; the premium UI and remaining pillars follow.
 
-1. **Install dependencies**
+## Quick start
 
-   ```bash
-   cd web
-   npm install
-   ```
+Prerequisites: Node 20+, Python 3.11+, a Supabase project.
 
-2. **Create a database.** Make a free project at https://supabase.com, then go
-   to **Settings → Database → Connection string** and copy both the *pooled*
-   (port 6543) and *direct* (port 5432) connection strings.
+```bash
+# Frontend
+cd frontend
+npm install
+cp .env.example .env   # fill in Supabase + DB URLs
+npx prisma migrate dev
+npm run dev             # http://localhost:3000
 
-3. **Configure env.** Copy `web/.env.example` to `web/.env` and fill in
-   `DATABASE_URL` (pooled) and `DIRECT_URL` (direct). A `SESSION_SECRET` is
-   already generated in `.env`.
+# Backend (separate terminal)
+cd backend
+python -m venv .venv && . .venv/Scripts/activate   # Windows
+pip install -r requirements.txt
+uvicorn app.main:app --reload --port 8000          # http://localhost:8000/docs
+```
 
-   > No Supabase yet? You can point both URLs at any local Postgres, e.g.
-   > `postgresql://postgres:postgres@localhost:5432/irontrack`.
+> On a machine with a TLS-intercepting proxy/AV, prefix Node commands with
+> `NODE_OPTIONS=--use-system-ca` and install pip packages with
+> `pip install --use-feature=truststore -r requirements.txt`.
 
-4. **Create the database tables**
-
-   ```bash
-   cd web
-   npx prisma migrate dev --name init
-   ```
-
-5. **Run it**
-
-   ```bash
-   npm run dev
-   ```
-
-   Open http://localhost:3000, create an account, and log your first lift.
-
-## How the AI coach works
-
-`web/src/lib/coach/` defines a `Coach` interface and a `MockCoach`
-implementation. Given a lift's history and goal it computes:
-
-- best & current estimated 1RM,
-- progress % toward the goal,
-- a trend (improving / plateau / declining) via a linear fit on 1RM over time,
-- a projection of when you'll hit the goal at your current rate,
-- a next-session prescription whose intensity scales with how close you are.
-
-To use a real model, implement a new class (e.g. `ClaudeCoach`) that fulfils the
-same interface and return it from `getCoach()`. Nothing else in the app changes.
+See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the full design.
