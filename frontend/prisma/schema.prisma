@@ -1,5 +1,6 @@
-// Prisma schema for the Health/Gym progress app.
-// Datasource is Postgres (Supabase). Set DATABASE_URL in web/.env.
+// STRATUM data model — strength, nutrition, body composition, recovery,
+// coaching, and research. Postgres (Supabase). Single source of truth for the
+// database; the FastAPI service reads these tables but never owns the schema.
 
 generator client {
   provider = "prisma-client-js"
@@ -21,26 +22,39 @@ model User {
   passwordHash String
   createdAt    DateTime @default(now())
 
-  lifts          LiftEntry[]
-  goals          Goal[]
-  bodyWeights    BodyWeightEntry[]
-  bodyWeightGoal BodyWeightGoal?
-  volumeGoals    VolumeGoal[]
+  lifts            LiftEntry[]
+  goals            Goal[]
+  bodyWeights      BodyWeightEntry[]
+  bodyWeightGoal   BodyWeightGoal?
+  volumeGoals      VolumeGoal[]
+  profile          UserProfile?
+  nutritionEntries NutritionEntry[]
+  mealTemplates    MealTemplate[]
+  nutritionTarget  NutritionTarget?
+  bodyMeasurements BodyMeasurement[]
+  progressPhotos   ProgressPhoto[]
+  recoveryLogs     RecoveryLog[]
+  coachProfile     CoachProfile?
+  coachPlans       CoachPlan[]
+  reports          Report[]
 }
 
 // A single logged set/session for a lift, e.g. "Bench Press, 225lb x 5".
 model LiftEntry {
-  id         String   @id @default(cuid())
-  userId     String
-  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  exercise   String // normalized lower-case key, e.g. "bench press"
-  weight     Float // weight lifted, in the unit stored on the entry
-  reps       Int
-  sets       Int      @default(1)
-  unit       String   @default("lb") // "lb" or "kg"
-  notes      String?
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  exercise    String // normalized lower-case key, e.g. "bench press"
+  weight      Float // weight lifted, in the unit stored on the entry
+  reps        Int
+  sets        Int      @default(1)
+  unit        String   @default("lb") // "lb" or "kg"
+  rpe         Float? // rate of perceived exertion (1-10)
+  restSeconds Int? // rest taken before/after the set
+  tempo       String? // e.g. "3-1-1-0" (eccentric-pause-concentric-pause)
+  notes       String?
   performedAt DateTime @default(now())
-  createdAt  DateTime @default(now())
+  createdAt   DateTime @default(now())
 
   @@index([userId, exercise, performedAt])
 }
@@ -99,4 +113,279 @@ model Goal {
   createdAt    DateTime  @default(now())
 
   @@index([userId, exercise])
+}
+
+// ===========================================================================
+// Profile & onboarding — the inputs the AI coach reasons over.
+// ===========================================================================
+
+enum Sex {
+  male
+  female
+  other
+}
+
+enum GoalType {
+  strength
+  hypertrophy
+  fat_loss
+  recomposition
+  general_health
+}
+
+enum TrainingLevel {
+  beginner
+  intermediate
+  advanced
+}
+
+model UserProfile {
+  id            String         @id @default(cuid())
+  userId        String         @unique
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sex           Sex?
+  birthDate     DateTime?
+  heightCm      Float?
+  trainingLevel TrainingLevel?
+  trainingYears Float?
+  daysPerWeek   Int? // intended training days/week
+  primaryGoal   GoalType?
+  units         String         @default("lb") // "lb" | "kg"
+  equipment     String[] // e.g. ["barbell","dumbbell","cable"]
+  injuries      String[]
+  onboardedAt   DateTime?
+  updatedAt     DateTime       @updatedAt
+  createdAt     DateTime       @default(now())
+}
+
+// ===========================================================================
+// Exercise catalog — maps a lift to muscle groups for muscle-group analytics.
+// LiftEntry.exercise keys into this by normalized name.
+// ===========================================================================
+
+model Exercise {
+  id               String   @id @default(cuid())
+  key              String   @unique // normalized name, e.g. "bench press"
+  name             String
+  primaryMuscle    String
+  secondaryMuscles String[]
+  category         String? // e.g. "compound", "isolation"
+  equipment        String?
+  createdAt        DateTime @default(now())
+}
+
+// ===========================================================================
+// Nutrition — macros, fiber, and a full micronutrient panel per entry.
+// ===========================================================================
+
+enum MealType {
+  breakfast
+  lunch
+  dinner
+  snack
+}
+
+enum NutrientSource {
+  manual
+  template
+  barcode
+  ai
+}
+
+model NutritionEntry {
+  id       String          @id @default(cuid())
+  userId   String
+  user     User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name     String
+  grams    Float?
+  mealType MealType?
+  source   NutrientSource  @default(manual)
+
+  // Macros
+  calories Float
+  proteinG Float @default(0)
+  carbsG   Float @default(0)
+  fatG     Float @default(0)
+  fiberG   Float @default(0)
+
+  // Micronutrients (nullable — we never fear missing data)
+  sodiumMg     Float?
+  potassiumMg  Float?
+  magnesiumMg  Float?
+  calciumMg    Float?
+  ironMg       Float?
+  zincMg       Float?
+  vitaminAUg   Float?
+  vitaminB12Ug Float?
+  folateUg     Float?
+  vitaminCMg   Float?
+  vitaminDUg   Float?
+  vitaminEMg   Float?
+  vitaminKUg   Float?
+  omega3G      Float?
+
+  loggedAt  DateTime @default(now())
+  createdAt DateTime @default(now())
+
+  @@index([userId, loggedAt])
+}
+
+model MealTemplate {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name      String
+  // Items: [{ name, grams, calories, proteinG, ... }] captured at save time.
+  items     Json
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+
+model NutritionTarget {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  calories  Float
+  proteinG  Float
+  carbsG    Float
+  fatG      Float
+  fiberG    Float?
+  // Per-micronutrient targets keyed by nutrient name; queried less often.
+  micros    Json?
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+}
+
+// ===========================================================================
+// Body composition — measurements and progress photos.
+// ===========================================================================
+
+model BodyMeasurement {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  weight      Float?
+  unit        String   @default("lb")
+  waistCm     Float?
+  neckCm      Float?
+  hipCm       Float?
+  bodyFatPct  Float? // entered or estimated
+  performedAt DateTime @default(now())
+  createdAt   DateTime @default(now())
+
+  @@index([userId, performedAt])
+}
+
+model ProgressPhoto {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  storageKey String // Supabase Storage path
+  pose      String? // "front" | "side" | "back"
+  weightAt  Float?
+  takenAt   DateTime @default(now())
+  createdAt DateTime @default(now())
+
+  @@index([userId, takenAt])
+}
+
+// ===========================================================================
+// Recovery & readiness — one log per day per user.
+// ===========================================================================
+
+model RecoveryLog {
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date         DateTime @db.Date
+  sleepHours   Float?
+  sleepQuality Int? // 1-5
+  stress       Int? // 1-5
+  steps        Int?
+  energy       Int? // 1-5
+  soreness     Int? // DOMS, 1-5
+  restingHr    Int?
+  notes        String?
+  createdAt    DateTime @default(now())
+
+  @@unique([userId, date])
+}
+
+// ===========================================================================
+// Coaching — per-user memory and generated plans.
+// ===========================================================================
+
+model CoachProfile {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // Evolving memory: preferences, weak points, compliance signals, etc.
+  memory      Json     @default("{}")
+  updatedAt   DateTime @updatedAt
+  createdAt   DateTime @default(now())
+}
+
+model CoachPlan {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  weekStart  DateTime @db.Date
+  plan       Json // structured weekly plan
+  rationale  String?
+  confidence Float? // 0-1
+  createdAt  DateTime @default(now())
+
+  @@index([userId, weekStart])
+}
+
+// ===========================================================================
+// Research & citations — sources now; embeddings (pgvector) added in Phase 3.
+// ===========================================================================
+
+model ResearchSource {
+  id        String           @id @default(cuid())
+  slug      String           @unique
+  title     String
+  authors   String
+  year      Int?
+  doi       String?
+  tags      String[]
+  summary   String
+  createdAt DateTime         @default(now())
+  chunks    ResearchChunk[]
+}
+
+model ResearchChunk {
+  id        String         @id @default(cuid())
+  sourceId  String
+  source    ResearchSource @relation(fields: [sourceId], references: [id], onDelete: Cascade)
+  content   String
+  // embedding vector(384) is added in Phase 3 when pgvector retrieval lands.
+  createdAt DateTime       @default(now())
+
+  @@index([sourceId])
+}
+
+// ===========================================================================
+// Intelligence layer — generated daily/weekly/monthly reports.
+// ===========================================================================
+
+enum ReportType {
+  daily
+  weekly
+  monthly
+}
+
+model Report {
+  id          String     @id @default(cuid())
+  userId      String
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type        ReportType
+  periodStart DateTime   @db.Date
+  periodEnd   DateTime   @db.Date
+  content     Json // { wins, misses, predictions, nextActions }
+  createdAt   DateTime   @default(now())
+
+  @@unique([userId, type, periodStart])
 }
