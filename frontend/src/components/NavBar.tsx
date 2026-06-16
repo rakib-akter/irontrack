@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import ThemeToggle from "@/components/ThemeToggle";
 
 const links = [
   { href: "/dashboard", label: "Dashboard" },
@@ -54,6 +55,7 @@ export default function NavBar({ name }: { name: string | null }) {
               Hi, {name}
             </span>
           )}
+          <ThemeToggle />
           <button
             onClick={logout}
             className="shrink-0 whitespace-nowrap rounded-lg px-2.5 py-1.5 text-sm text-fg-muted hover:text-fg sm:px-3"

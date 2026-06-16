@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import "@fontsource-variable/inter";
 import "./globals.css";
+import Providers from "@/components/Providers";
+import { themeInitScript } from "@/lib/theme";
 
 export const metadata: Metadata = {
   title: "STRATUM — AI Strength, Nutrition & Recomposition",
@@ -15,7 +17,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body>{children}</body>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+      </head>
+      <body>
+        <Providers>{children}</Providers>
+      </body>
     </html>
   );
 }
