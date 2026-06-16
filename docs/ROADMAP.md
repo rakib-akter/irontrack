@@ -3,17 +3,17 @@
 Built in phases. Every phase keeps the app functional and ships verified,
 focused commits. ✅ done · 🔄 in progress · ⬜ planned.
 
-## Phase 0 — Foundation
+## Phase 0 — Foundation ✅
 - ✅ Monorepo restructure (`frontend/`, `backend/`, `analytics/`, `research/`, `shared/`, `docs/`)
-- ✅ Architecture + roadmap docs
-- ⬜ `analytics/` engine: Epley, Brzycki, RIR, rolling averages, plateau detection (+ pytest)
-- ⬜ Expanded Prisma schema for all six domains + migration
+- ✅ Architecture + roadmap + data-model docs
+- ✅ `analytics/` engine: Epley, Brzycki, RIR, rolling averages, plateau detection (28 pytest tests)
+- ✅ Expanded Prisma schema for all six domains + migration (RLS on every table)
 
-## Phase 0b — Intelligence service
-- ⬜ FastAPI skeleton that boots (`/health`, OpenAPI docs)
-- ⬜ Supabase JWT verification dependency
-- ⬜ AI gateway: OpenRouter free-first + fallback + no-key rule-based mode
-- ⬜ Analytics endpoints exposing the `analytics/` package
+## Phase 0b — Intelligence service ✅
+- ✅ FastAPI skeleton that boots (`/health`, OpenAPI docs at `/docs`)
+- ✅ Supabase JWT verification dependency (ready to wire in 0c)
+- ✅ AI gateway: OpenRouter free-first + fallback + no-key rule-based mode
+- ✅ Analytics endpoints exposing the `analytics/` package
 
 ## Phase 0c — Design system + auth
 - ⬜ STRATUM design system: off-white/graphite, electric-blue accent, rounded
