@@ -16,11 +16,13 @@ focused commits. ✅ done · 🔄 in progress · ⬜ planned.
 - ✅ Analytics endpoints exposing the `analytics/` package
 
 ## Phase 0c — Design system + auth
-- ⬜ STRATUM design system: off-white/graphite, electric-blue accent, rounded
-  cards, selective glass, Framer Motion, self-hosted fonts (Fontsource)
-- ⬜ UI primitives: Card, Stat, Ring, Heatmap, Sparkline, PageHeader
+- ✅ STRATUM design system: off-white/graphite, electric-blue accent, rounded
+  cards, glass utility, self-hosted Inter (Fontsource) — semantic CSS-var tokens
+- ✅ Framer Motion entrance animations (FadeIn/Stagger) + reduced-motion respect
+- ✅ Dark mode (no-flash, class-based toggle in nav)
+- 🔄 UI primitives: extract Stat/Ring/Heatmap/Sparkline/PageHeader (ongoing as pillars land)
 - ⬜ Migrate to Supabase Auth + RLS policies on `auth.uid()`
-- ⬜ Onboarding flow + dark mode
+- ⬜ Onboarding flow
 
 ## Phase 1 — Strength Intelligence Engine  *(first pillar)*
 - ⬜ Logging: weight, reps, sets, RPE, rest, tempo
