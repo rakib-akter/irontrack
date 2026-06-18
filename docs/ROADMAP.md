@@ -21,7 +21,9 @@ focused commits. ✅ done · 🔄 in progress · ⬜ planned.
 - ✅ Framer Motion entrance animations (FadeIn/Stagger) + reduced-motion respect
 - ✅ Dark mode (no-flash, class-based toggle in nav)
 - 🔄 UI primitives: extract Stat/Ring/Heatmap/Sparkline/PageHeader (ongoing as pillars land)
-- ⬜ Migrate to Supabase Auth + RLS policies on `auth.uid()`
+- ✅ Migrate to Supabase Auth (middleware session refresh, User linking, callback).
+  Note: data authz stays in the app layer via Prisma, so RLS remains deny-all on
+  the Data API (more secure than per-user `auth.uid()` policies for this design).
 - ⬜ Onboarding flow
 
 ## Phase 1 — Strength Intelligence Engine  *(first pillar)*
