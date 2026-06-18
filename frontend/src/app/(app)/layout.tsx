@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { getUserId } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import NavBar from "@/components/NavBar";
+import { FadeIn } from "@/components/ui/Motion";
 
 export default async function AppLayout({
   children,
@@ -20,7 +21,7 @@ export default async function AppLayout({
     <div>
       <NavBar name={user?.name ?? null} />
       <main className="mx-auto max-w-5xl px-4 py-6 sm:px-6 sm:py-8">
-        {children}
+        <FadeIn>{children}</FadeIn>
       </main>
     </div>
   );
