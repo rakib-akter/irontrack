@@ -15,6 +15,9 @@ export default function LogLiftForm({
   const [reps, setReps] = useState("");
   const [sets, setSets] = useState("1");
   const [unit, setUnit] = useState<"lb" | "kg">("lb");
+  const [rpe, setRpe] = useState("");
+  const [rest, setRest] = useState("");
+  const [tempo, setTempo] = useState("");
   const [date, setDate] = useState(() =>
     new Date().toISOString().slice(0, 10),
   );
@@ -36,6 +39,9 @@ export default function LogLiftForm({
           reps: Number(reps),
           sets: Number(sets),
           unit,
+          rpe: rpe ? Number(rpe) : undefined,
+          restSeconds: rest ? Number(rest) : undefined,
+          tempo: tempo || undefined,
           notes: notes || undefined,
           // store at noon local to avoid timezone date-shift surprises
           performedAt: new Date(`${date}T12:00:00`).toISOString(),
@@ -49,6 +55,8 @@ export default function LogLiftForm({
       // Reset the numeric fields, keep exercise/unit for fast repeated logging.
       setWeight("");
       setReps("");
+      setRpe("");
+      setRest("");
       setNotes("");
       router.refresh();
     } catch {
@@ -136,6 +144,42 @@ export default function LogLiftForm({
             value={date}
             onChange={(e) => setDate(e.target.value)}
             required
+          />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-3 gap-3">
+        <div>
+          <label className="label">RPE</label>
+          <input
+            className="input"
+            type="number"
+            step="0.5"
+            min="1"
+            max="10"
+            value={rpe}
+            onChange={(e) => setRpe(e.target.value)}
+            placeholder="8"
+          />
+        </div>
+        <div>
+          <label className="label">Rest (s)</label>
+          <input
+            className="input"
+            type="number"
+            min="0"
+            value={rest}
+            onChange={(e) => setRest(e.target.value)}
+            placeholder="180"
+          />
+        </div>
+        <div>
+          <label className="label">Tempo</label>
+          <input
+            className="input"
+            value={tempo}
+            onChange={(e) => setTempo(e.target.value)}
+            placeholder="3-1-1"
           />
         </div>
       </div>
