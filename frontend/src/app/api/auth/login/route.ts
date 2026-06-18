@@ -14,7 +14,11 @@ export async function POST(req: Request) {
     const email = body.email.toLowerCase();
 
     const user = await prisma.user.findUnique({ where: { email } });
-    if (!user || !(await verifyPassword(body.password, user.passwordHash))) {
+    if (
+      !user ||
+      !user.passwordHash ||
+      !(await verifyPassword(body.password, user.passwordHash))
+    ) {
       return error("Invalid email or password", 401);
     }
 
