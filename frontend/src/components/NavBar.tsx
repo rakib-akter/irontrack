@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import ThemeToggle from "@/components/ThemeToggle";
+import { createClient } from "@/lib/supabase/client";
 
 const links = [
   { href: "/dashboard", label: "Dashboard" },
@@ -16,7 +17,7 @@ export default function NavBar({ name }: { name: string | null }) {
   const router = useRouter();
 
   async function logout() {
-    await fetch("/api/auth/logout", { method: "POST" });
+    await createClient().auth.signOut();
     router.push("/login");
     router.refresh();
   }

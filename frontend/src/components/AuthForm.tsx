@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { createClient } from "@/lib/supabase/client";
 
 export default function AuthForm({ mode }: { mode: "login" | "signup" }) {
   const router = useRouter();
@@ -10,6 +11,7 @@ export default function AuthForm({ mode }: { mode: "login" | "signup" }) {
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   const isSignup = mode === "signup";
@@ -17,24 +19,44 @@ export default function AuthForm({ mode }: { mode: "login" | "signup" }) {
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
+    setNotice(null);
     setLoading(true);
     try {
-      const res = await fetch(`/api/auth/${isSignup ? "register" : "login"}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(
-          isSignup ? { email, password, name } : { email, password },
-        ),
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        setError(data.error ?? "Something went wrong");
-        return;
+      const supabase = createClient();
+      if (isSignup) {
+        const { data, error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            data: { name: name || undefined },
+            emailRedirectTo: `${window.location.origin}/auth/callback`,
+          },
+        });
+        if (error) {
+          setError(error.message);
+          return;
+        }
+        // If email confirmation is required, there's no session yet.
+        if (!data.session) {
+          setNotice(
+            "Account created. Check your email to confirm, then log in.",
+          );
+          return;
+        }
+      } else {
+        const { error } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
+        if (error) {
+          setError(error.message);
+          return;
+        }
       }
       router.push("/dashboard");
       router.refresh();
     } catch {
-      setError("Network error — is the server running?");
+      setError("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -95,6 +117,11 @@ export default function AuthForm({ mode }: { mode: "login" | "signup" }) {
           {error && (
             <p className="rounded-lg bg-danger/10 px-3 py-2 text-sm text-danger">
               {error}
+            </p>
+          )}
+          {notice && (
+            <p className="rounded-lg bg-accent-weak px-3 py-2 text-sm text-accent">
+              {notice}
             </p>
           )}
 
