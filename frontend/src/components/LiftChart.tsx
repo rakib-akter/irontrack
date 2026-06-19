@@ -2,8 +2,9 @@
 
 import {
   Area,
-  AreaChart,
   CartesianGrid,
+  ComposedChart,
+  Line,
   ReferenceLine,
   ResponsiveContainer,
   Tooltip,
@@ -13,8 +14,10 @@ import {
 
 export interface ChartPoint {
   date: string; // ISO date
-  oneRM: number; // estimated 1RM on that day
   label: string; // formatted date for axis
+  oneRM?: number | null; // estimated 1RM on that day
+  ma?: number | null; // moving average of estimated 1RM
+  projected?: number | null; // projected future 1RM (dashed)
 }
 
 export default function LiftChart({
@@ -34,15 +37,23 @@ export default function LiftChart({
     );
   }
 
-  const values = data.map((d) => d.oneRM);
-  const min = Math.min(...values, goal ?? Infinity);
-  const max = Math.max(...values, goal ?? 0);
+  const nums = data
+    .flatMap((d) => [d.oneRM, d.ma, d.projected])
+    .filter((v): v is number => typeof v === "number");
+  const min = Math.min(...nums, goal ?? Infinity);
+  const max = Math.max(...nums, goal ?? 0);
   const pad = Math.max(10, (max - min) * 0.15);
+
+  const hasMA = data.some((d) => typeof d.ma === "number");
+  const hasProjection = data.some((d) => typeof d.projected === "number");
 
   return (
     <div className="h-64 w-full">
       <ResponsiveContainer width="100%" height="100%">
-        <AreaChart data={data} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
+        <ComposedChart
+          data={data}
+          margin={{ top: 10, right: 10, left: -10, bottom: 0 }}
+        >
           <defs>
             <linearGradient id="orm" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stopColor="var(--accent)" stopOpacity={0.5} />
@@ -69,11 +80,19 @@ export default function LiftChart({
             contentStyle={{
               background: "var(--surface)",
               border: "1px solid var(--border-strong)",
-              borderRadius: 10, color: "var(--fg)",
+              borderRadius: 10,
+              color: "var(--fg)",
               fontSize: 12,
             }}
             labelStyle={{ color: "var(--fg-muted)" }}
-            formatter={(v) => [`${Math.round(Number(v))} ${unit}`, "Est. 1RM"]}
+            formatter={(v, name) => [
+              `${Math.round(Number(v))} ${unit}`,
+              name === "ma"
+                ? "Moving avg"
+                : name === "projected"
+                  ? "Projected"
+                  : "Est. 1RM",
+            ]}
           />
           {goal ? (
             <ReferenceLine
@@ -95,8 +114,30 @@ export default function LiftChart({
             strokeWidth={2}
             fill="url(#orm)"
             dot={{ r: 3, fill: "var(--accent)" }}
+            connectNulls
           />
-        </AreaChart>
+          {hasMA && (
+            <Line
+              type="monotone"
+              dataKey="ma"
+              stroke="var(--fg-muted)"
+              strokeWidth={1.5}
+              dot={false}
+              connectNulls
+            />
+          )}
+          {hasProjection && (
+            <Line
+              type="monotone"
+              dataKey="projected"
+              stroke="var(--accent)"
+              strokeWidth={1.5}
+              strokeDasharray="5 4"
+              dot={false}
+              connectNulls
+            />
+          )}
+        </ComposedChart>
       </ResponsiveContainer>
     </div>
   );
