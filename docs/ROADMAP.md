@@ -27,11 +27,11 @@ focused commits. ✅ done · 🔄 in progress · ⬜ planned.
 - ⬜ Onboarding flow
 
 ## Phase 1 — Strength Intelligence Engine  *(first pillar)*
-- ⬜ Logging: weight, reps, sets, RPE, rest, tempo
-- ⬜ Auto-calc: 1RM, volume, fatigue, progression rate, plateau
-- ⬜ Dashboard: strength score, strongest lifts, projected PR date, muscle-group progression
-- ⬜ Charts: moving average, projected strength, bodyweight-adjusted strength
-- ⬜ First AI insight ("squat volume +12% but recovery dropped")
+- ✅ Logging: weight, reps, sets, RPE, rest, tempo
+- ✅ Auto-calc: 1RM, volume, progression rate, plateau, projected PR (analytics)
+- ✅ Dashboard: strength score, strongest lifts, projected PR date, muscle-group progression
+- ✅ Charts: moving average + projected future strength (bodyweight-adjusted: follow-up)
+- ✅ AI insights: week-over-week volume, plateau, PR pace, muscle balance (rule-based; LLM-ready)
 
 ## Phase 2 — Nutrition Operating System
 - ⬜ Macros + fiber + full micronutrient panel

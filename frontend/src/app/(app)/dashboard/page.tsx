@@ -48,6 +48,10 @@ export default async function DashboardPage() {
   const firstBW = bodyWeights.length ? bodyWeights[0] : null;
   const bwChange =
     currentBW && firstBW ? currentBW.weight - firstBW.weight : null;
+  const bwToGoal =
+    currentBW && bwGoal
+      ? Math.round((bwGoal.targetWeight - currentBW.weight) * 10) / 10
+      : null;
 
   // Per-exercise summary + projection. Lifts are newest-first.
   type Summary = {
@@ -156,6 +160,13 @@ export default async function DashboardPage() {
               ? "Log your weight to start tracking"
               : `${bwChange > 0 ? "+" : ""}${Math.round(bwChange * 10) / 10} ${currentBW?.unit} since start`}
           </p>
+          {bwGoal && bwToGoal !== null && (
+            <p className="mt-2 text-xs font-medium text-warning">
+              {bwToGoal === 0
+                ? `🎉 Goal reached (${bwGoal.targetWeight} ${bwGoal.unit})`
+                : `${Math.abs(bwToGoal)} ${bwGoal.unit} to ${bwToGoal < 0 ? "lose" : "gain"} → ${bwGoal.targetWeight} ${bwGoal.unit}`}
+            </p>
+          )}
         </Link>
 
         <div className="card">
