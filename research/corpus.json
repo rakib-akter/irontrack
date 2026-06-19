@@ -1,0 +1,184 @@
+[
+  {
+    "slug": "volume-hypertrophy-dose-response",
+    "title": "Weekly resistance-training volume and muscle growth (dose-response)",
+    "authors": "Schoenfeld, Ogborn & Krieger",
+    "year": 2017,
+    "tags": ["volume", "hypertrophy", "sets", "muscle"],
+    "summary": "A meta-analysis showing a graded dose-response between weekly set volume per muscle and hypertrophy.",
+    "claims": [
+      "Higher weekly set volume per muscle group is associated with greater muscle hypertrophy in a dose-response manner.",
+      "Roughly 10 or more hard sets per muscle group per week tends to maximize hypertrophy for most trainees.",
+      "Adding sets generally adds growth up to a point, after which recovery becomes the limiting factor."
+    ]
+  },
+  {
+    "slug": "protein-intake-muscle",
+    "title": "Dietary protein and resistance-training adaptations",
+    "authors": "Morton et al.",
+    "year": 2018,
+    "tags": ["protein", "nutrition", "muscle", "recovery"],
+    "summary": "A meta-analysis on protein supplementation and resistance-training-induced gains in strength and mass.",
+    "claims": [
+      "Protein intakes around 1.6 g per kg of bodyweight per day maximize resistance-training-induced gains in lean mass.",
+      "Intakes beyond roughly 2.2 g/kg/day provide little additional benefit for muscle growth.",
+      "Total daily protein matters more than precise per-meal timing for hypertrophy."
+    ]
+  },
+  {
+    "slug": "training-frequency",
+    "title": "Resistance-training frequency and hypertrophy",
+    "authors": "Schoenfeld, Grgic & Krieger",
+    "year": 2019,
+    "tags": ["frequency", "hypertrophy", "volume"],
+    "summary": "Evidence on how often to train a muscle per week when volume is equated.",
+    "claims": [
+      "When weekly volume is equated, training a muscle group twice per week is at least as effective as once per week for hypertrophy.",
+      "Higher frequencies can help distribute volume into more productive, less fatiguing sessions.",
+      "Frequency is mainly a tool to accumulate weekly volume with good per-set quality."
+    ]
+  },
+  {
+    "slug": "rest-intervals",
+    "title": "Inter-set rest intervals for strength and hypertrophy",
+    "authors": "Schoenfeld et al.",
+    "year": 2016,
+    "tags": ["rest", "strength", "hypertrophy", "recovery"],
+    "summary": "A study comparing short vs longer rest periods on muscular adaptations.",
+    "claims": [
+      "Resting about 2-3 minutes between sets supports greater strength and hypertrophy than very short (~1 minute) rest.",
+      "Longer rest preserves per-set performance, allowing more total quality volume.",
+      "Compound lifts benefit most from longer rest intervals."
+    ]
+  },
+  {
+    "slug": "rpe-autoregulation",
+    "title": "RPE and reps-in-reserve for autoregulated training",
+    "authors": "Helms et al.",
+    "year": 2016,
+    "tags": ["rpe", "rir", "autoregulation", "intensity"],
+    "summary": "Framework for using rating of perceived exertion and reps-in-reserve to autoregulate load.",
+    "claims": [
+      "Rating sets by reps-in-reserve (RIR) lets lifters autoregulate load to daily readiness.",
+      "Most hypertrophy work is effective in the range of roughly 0-4 reps in reserve.",
+      "Autoregulating with RPE helps manage fatigue across a training block."
+    ]
+  },
+  {
+    "slug": "proximity-to-failure",
+    "title": "Proximity to failure and muscle growth",
+    "authors": "Refalo et al.",
+    "year": 2023,
+    "tags": ["failure", "rir", "hypertrophy", "fatigue"],
+    "summary": "A meta-analysis on how close to failure sets must be taken for hypertrophy.",
+    "claims": [
+      "Training close to failure drives hypertrophy, but sets do not have to reach absolute failure.",
+      "Stopping a few reps short of failure produces similar growth with less fatigue.",
+      "Reserving 1-3 reps lets you accumulate more weekly volume sustainably."
+    ]
+  },
+  {
+    "slug": "load-rep-ranges",
+    "title": "Load and repetition ranges for strength vs hypertrophy",
+    "authors": "Schoenfeld et al.",
+    "year": 2021,
+    "tags": ["load", "reps", "strength", "hypertrophy"],
+    "summary": "Evidence on heavy vs moderate loads for different adaptations.",
+    "claims": [
+      "Hypertrophy is similar across a wide range of loads when sets are taken near failure.",
+      "Maximal-strength gains are greater with heavier loads (roughly 1-6 reps).",
+      "Train heavy for strength specificity and use moderate reps to accumulate volume comfortably."
+    ]
+  },
+  {
+    "slug": "progressive-overload",
+    "title": "Progressive overload as the driver of adaptation",
+    "authors": "ACSM Position Stand",
+    "year": 2009,
+    "tags": ["progression", "overload", "strength"],
+    "summary": "Position stand emphasizing progression of training stimulus over time.",
+    "claims": [
+      "Continued progress requires progressively increasing the training stimulus over time.",
+      "Overload can be added via load, reps, sets, or improved technique and range of motion.",
+      "Small, consistent increments are more sustainable than large jumps."
+    ]
+  },
+  {
+    "slug": "deload-fatigue",
+    "title": "Fatigue management and deloads",
+    "authors": "Bell et al.",
+    "year": 2021,
+    "tags": ["deload", "fatigue", "recovery", "plateau"],
+    "summary": "On managing accumulated fatigue to sustain long-term progress.",
+    "claims": [
+      "Planned reductions in volume or intensity (deloads) help dissipate accumulated fatigue.",
+      "A stalled or declining estimated 1RM can signal accumulated fatigue rather than lost strength.",
+      "Periodically reducing volume can restore performance and allow further progress."
+    ]
+  },
+  {
+    "slug": "periodization",
+    "title": "Periodization for strength development",
+    "authors": "Williams et al.",
+    "year": 2017,
+    "tags": ["periodization", "strength", "programming"],
+    "summary": "Meta-analysis comparing periodized vs non-periodized training.",
+    "claims": [
+      "Periodized resistance training produces greater strength gains than non-periodized training.",
+      "Varying intensity and volume across a block manages fatigue and drives progress.",
+      "Both linear and undulating periodization outperform constant programming for strength."
+    ]
+  },
+  {
+    "slug": "sleep-performance",
+    "title": "Sleep extension and athletic performance",
+    "authors": "Mah et al.",
+    "year": 2011,
+    "tags": ["sleep", "recovery", "readiness"],
+    "summary": "Sleep extension improved performance metrics in athletes.",
+    "claims": [
+      "Extending sleep improves reaction time, mood, and physical performance in athletes.",
+      "Inadequate sleep impairs recovery and training readiness.",
+      "Prioritizing sleep is a high-leverage recovery intervention."
+    ]
+  },
+  {
+    "slug": "energy-balance-muscle",
+    "title": "Energy availability for muscle gain",
+    "authors": "Slater et al.",
+    "year": 2019,
+    "tags": ["nutrition", "surplus", "muscle", "recomposition"],
+    "summary": "On energy balance requirements for gaining lean mass.",
+    "claims": [
+      "A modest caloric surplus supports muscle gain while limiting fat gain.",
+      "Trained lifters gain muscle slowly, so an aggressive surplus mostly adds fat.",
+      "Adequate energy and protein together drive lean-mass accrual."
+    ]
+  },
+  {
+    "slug": "tempo-time-under-tension",
+    "title": "Repetition tempo and muscular adaptations",
+    "authors": "Schoenfeld, Ogborn & Krieger",
+    "year": 2015,
+    "tags": ["tempo", "eccentric", "hypertrophy"],
+    "summary": "Review of lifting tempo and time-under-tension on growth.",
+    "claims": [
+      "Very slow lifting tempos are not superior and can reduce the volume you can perform.",
+      "A controlled eccentric (lowering) phase is sufficient to stimulate growth.",
+      "Extremely long reps mainly reduce total work without extra benefit."
+    ]
+  },
+  {
+    "slug": "exercise-variation",
+    "title": "Exercise selection and variation",
+    "authors": "Fonseca et al.",
+    "year": 2014,
+    "tags": ["variation", "hypertrophy", "exercise-selection"],
+    "summary": "On varying exercises to develop a muscle more completely.",
+    "claims": [
+      "Some exercise variation can promote more complete muscle development.",
+      "Excessive novelty undermines progressive overload and skill in key lifts.",
+      "Keep core lifts stable to track progress, and rotate accessories."
+    ]
+  }
+]
