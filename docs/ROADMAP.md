@@ -33,11 +33,12 @@ focused commits. ✅ done · 🔄 in progress · ⬜ planned.
 - ✅ Charts: moving average + projected future strength (bodyweight-adjusted: follow-up)
 - ✅ AI insights: week-over-week volume, plateau, PR pace, muscle balance (rule-based; LLM-ready)
 
-## Phase 2 — Nutrition Operating System
-- ⬜ Macros + fiber + full micronutrient panel
-- ⬜ Logging: manual, meal templates, barcode, AI meal parsing
-- ⬜ Calorie ring, macro rings, micronutrient heatmap, nutrition quality score
-- ⬜ AI: low-nutrient explanations + practical food suggestions + confidence
+## Phase 2 — Nutrition Operating System ✅
+- ✅ Macros + fiber + full micronutrient panel (curated food DB, per-100g)
+- ✅ Logging: manual, quick-add from food DB, AI meal parsing (barcode: follow-up)
+- ✅ Calorie ring, macro rings, micronutrient heatmap, nutrition quality score
+- ✅ AI: low-nutrient explanations + practical food suggestions + confidence
+- ⬜ Follow-ups: meal templates, barcode scanning, more foods / USDA integration
 
 ## Phase 3 — AI Strength Coach + Research engine  *(the moat)*
 - ⬜ Research summaries → embeddings → retrieval (pgvector)
