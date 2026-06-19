@@ -6,6 +6,8 @@ import {
   microPercents,
   nutritionQualityScore,
 } from "@/lib/nutrition";
+import { nutritionAdvice } from "@/lib/nutrition/advice";
+import NutritionAdvicePanel from "@/components/nutrition/NutritionAdvice";
 import Ring from "@/components/ui/Ring";
 import MicroHeatmap from "@/components/nutrition/MicroHeatmap";
 import NutritionLogger from "@/components/nutrition/NutritionLogger";
@@ -67,6 +69,12 @@ export default async function NutritionPage() {
   const totals = sumNutrients(entries);
   const percents = microPercents(totals);
   const score = nutritionQualityScore(totals, target?.proteinG);
+  const advice = nutritionAdvice(
+    totals,
+    entries.length,
+    target?.proteinG,
+    target?.fiberG,
+  );
 
   const t = target ?? DEFAULT_TARGET;
   const remaining = Math.round(t.calories - totals.calories);
@@ -154,6 +162,9 @@ export default async function NutritionPage() {
         </h2>
         <MicroHeatmap totals={totals} percents={percents} />
       </div>
+
+      {/* Nutrition coach */}
+      <NutritionAdvicePanel advice={advice} />
 
       {/* Logger + today's log */}
       <div className="grid gap-6 md:grid-cols-2">
