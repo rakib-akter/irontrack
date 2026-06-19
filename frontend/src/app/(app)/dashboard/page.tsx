@@ -15,6 +15,8 @@ import {
   MUSCLE_GROUPS,
   type MuscleGroup,
 } from "@/lib/exerciseCatalog";
+import { generateInsights } from "@/lib/insights";
+import InsightsPanel from "@/components/InsightsPanel";
 
 export const dynamic = "force-dynamic";
 
@@ -105,6 +107,17 @@ export default async function DashboardPage() {
   }
   const maxMuscle = Math.max(1, ...MUSCLE_GROUPS.map((m) => weekByMuscle.get(m) ?? 0));
 
+  const insights = generateInsights(
+    lifts.map((l) => ({
+      exercise: l.exercise,
+      weight: l.weight,
+      reps: l.reps,
+      sets: l.sets,
+      unit: l.unit,
+      performedAt: l.performedAt,
+    })),
+  );
+
   return (
     <div className="space-y-8">
       {/* Strength score hero */}
@@ -122,6 +135,9 @@ export default async function DashboardPage() {
           as you get stronger.
         </p>
       </div>
+
+      {/* AI insights */}
+      <InsightsPanel insights={insights} />
 
       {/* Secondary stats */}
       <div className="grid gap-4 sm:grid-cols-3">
