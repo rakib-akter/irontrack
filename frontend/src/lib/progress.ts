@@ -148,3 +148,52 @@ export function suggestedWeeklyVolume(points: ProgressPoint[]): number | null {
     weeklyVolumes.reduce((a, b) => a + b, 0) / weeklyVolumes.length;
   return Math.max(100, Math.round((avg * 1.05) / 100) * 100);
 }
+
+const DAY_MS = 86_400_000;
+
+/** Best estimated 1RM per calendar day as [daysSinceFirst, oneRM], ascending. */
+export function best1RMByDay(points: ProgressPoint[]): [number, number][] {
+  const byDay = new Map<string, number>();
+  for (const p of points) {
+    const day = p.performedAt.toISOString().slice(0, 10);
+    byDay.set(day, Math.max(byDay.get(day) ?? 0, estimateOneRepMax(p.weight, p.reps)));
+  }
+  const entries = [...byDay.entries()].sort((a, b) => a[0].localeCompare(b[0]));
+  if (entries.length === 0) return [];
+  const t0 = new Date(`${entries[0][0]}T00:00:00`).getTime();
+  return entries.map(([d, orm]) => [
+    (new Date(`${d}T00:00:00`).getTime() - t0) / DAY_MS,
+    orm,
+  ]);
+}
+
+/** Linear progression rate of best estimated 1RM, per week. null if there
+ * isn't enough spread to fit a line. */
+export function strengthRatePerWeek(points: ProgressPoint[]): number | null {
+  const series = best1RMByDay(points);
+  if (series.length < 2) return null;
+  const xs = series.map((s) => s[0]);
+  const ys = series.map((s) => s[1]);
+  if (xs[xs.length - 1] - xs[0] <= 0) return null;
+  const n = xs.length;
+  const sx = xs.reduce((a, b) => a + b, 0);
+  const sy = ys.reduce((a, b) => a + b, 0);
+  const sxx = xs.reduce((a, b) => a + b * b, 0);
+  const sxy = xs.reduce((a, b, i) => a + b * ys[i], 0);
+  const denom = n * sxx - sx * sx;
+  if (denom === 0) return null;
+  return ((n * sxy - sx * sy) / denom) * 7;
+}
+
+/** Projected date to add `gain` to the current best 1RM at the current rate.
+ * null if not progressing or the horizon is implausibly far (>2 years). */
+export function projectedPRDate(
+  points: ProgressPoint[],
+  gain = 5,
+): Date | null {
+  const rate = strengthRatePerWeek(points);
+  if (!rate || rate <= 0) return null;
+  const weeks = gain / rate;
+  if (weeks > 104) return null;
+  return new Date(Date.now() + weeks * 7 * DAY_MS);
+}

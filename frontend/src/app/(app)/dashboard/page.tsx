@@ -4,8 +4,23 @@ import { getUserId } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { estimateOneRepMax } from "@/lib/strength";
 import { displayExercise } from "@/lib/exercises";
+import {
+  volumeOf,
+  startOfWeek,
+  projectedPRDate,
+  type ProgressPoint,
+} from "@/lib/progress";
+import {
+  muscleForExercise,
+  MUSCLE_GROUPS,
+  type MuscleGroup,
+} from "@/lib/exerciseCatalog";
 
 export const dynamic = "force-dynamic";
+
+function shortDate(d: Date) {
+  return d.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+}
 
 export default async function DashboardPage() {
   const userId = await getUserId();
@@ -24,33 +39,32 @@ export default async function DashboardPage() {
     prisma.bodyWeightGoal.findUnique({ where: { userId } }),
   ]);
 
-  // Body weight summary: current = latest, change = latest - first.
+  // Body weight summary.
   const currentBW = bodyWeights.length
     ? bodyWeights[bodyWeights.length - 1]
     : null;
   const firstBW = bodyWeights.length ? bodyWeights[0] : null;
   const bwChange =
     currentBW && firstBW ? currentBW.weight - firstBW.weight : null;
-  // Distance to body-weight goal (signed): + => gain, - => lose.
-  const bwToGoal =
-    currentBW && bwGoal
-      ? Math.round((bwGoal.targetWeight - currentBW.weight) * 10) / 10
-      : null;
 
-  // Summarize per exercise. Lifts are sorted newest-first, so the first time we
-  // see an exercise is its most recent set.
-  const byExercise = new Map<
-    string,
-    {
-      count: number;
-      best1RM: number;
-      unit: string;
-      latestWeight: number;
-      latestReps: number;
-    }
-  >();
+  // Per-exercise summary + projection. Lifts are newest-first.
+  type Summary = {
+    count: number;
+    best1RM: number;
+    unit: string;
+    latestWeight: number;
+    latestReps: number;
+    points: ProgressPoint[];
+  };
+  const byExercise = new Map<string, Summary>();
   for (const l of lifts) {
     const orm = estimateOneRepMax(l.weight, l.reps);
+    const point: ProgressPoint = {
+      weight: l.weight,
+      reps: l.reps,
+      sets: l.sets,
+      performedAt: l.performedAt,
+    };
     const cur = byExercise.get(l.exercise);
     if (!cur) {
       byExercise.set(l.exercise, {
@@ -59,21 +73,57 @@ export default async function DashboardPage() {
         unit: l.unit,
         latestWeight: l.weight,
         latestReps: l.reps,
+        points: [point],
       });
     } else {
       cur.count += 1;
       cur.best1RM = Math.max(cur.best1RM, orm);
+      cur.points.push(point);
     }
   }
-
   const goalByExercise = new Map(goals.map((g) => [g.exercise, g]));
-  const exercises = [...byExercise.entries()].sort((a, b) =>
-    a[0].localeCompare(b[0]),
+  const exercises = [...byExercise.entries()].sort(
+    (a, b) => b[1].best1RM - a[1].best1RM,
   );
+
+  // Strength score = sum of best estimated 1RMs across lifts.
+  const strengthScore = Math.round(
+    exercises.reduce((s, [, v]) => s + v.best1RM, 0),
+  );
+  const scoreUnit = exercises[0]?.[1].unit ?? "lb";
+
+  // This week's volume, total and by muscle group.
+  const weekStart = startOfWeek();
+  const weekByMuscle = new Map<MuscleGroup, number>();
+  let weekVolume = 0;
+  for (const l of lifts) {
+    if (l.performedAt < weekStart) continue;
+    const v = volumeOf(l);
+    weekVolume += v;
+    const m = muscleForExercise(l.exercise);
+    weekByMuscle.set(m, (weekByMuscle.get(m) ?? 0) + v);
+  }
+  const maxMuscle = Math.max(1, ...MUSCLE_GROUPS.map((m) => weekByMuscle.get(m) ?? 0));
 
   return (
     <div className="space-y-8">
-      {/* Top summary: body weight + headline stats */}
+      {/* Strength score hero */}
+      <div className="glass p-6">
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-accent">
+          Strength score
+        </p>
+        <p className="mt-1 text-5xl font-bold tracking-tight">
+          {strengthScore.toLocaleString()}{" "}
+          <span className="text-xl font-normal text-fg-muted">{scoreUnit}</span>
+        </p>
+        <p className="mt-1 text-sm text-fg-muted">
+          Sum of your best estimated 1RMs across{" "}
+          {exercises.length} lift{exercises.length === 1 ? "" : "s"} — it climbs
+          as you get stronger.
+        </p>
+      </div>
+
+      {/* Secondary stats */}
       <div className="grid gap-4 sm:grid-cols-3">
         <Link
           href="/bodyweight"
@@ -90,25 +140,19 @@ export default async function DashboardPage() {
               ? "Log your weight to start tracking"
               : `${bwChange > 0 ? "+" : ""}${Math.round(bwChange * 10) / 10} ${currentBW?.unit} since start`}
           </p>
-          {bwGoal && (
-            <p className="mt-2 text-xs font-medium text-warning">
-              {bwToGoal === null
-                ? `Goal ${bwGoal.targetWeight} ${bwGoal.unit}`
-                : bwToGoal === 0
-                  ? `🎉 Goal reached (${bwGoal.targetWeight} ${bwGoal.unit})`
-                  : `${Math.abs(bwToGoal)} ${bwGoal.unit} to ${bwToGoal < 0 ? "lose" : "gain"} → ${bwGoal.targetWeight} ${bwGoal.unit}`}
-            </p>
-          )}
         </Link>
 
         <div className="card">
           <p className="text-xs uppercase tracking-wide text-fg-muted">
-            Exercises tracked
+            Volume this week
           </p>
-          <p className="mt-1 text-3xl font-bold">{exercises.length}</p>
-          <p className="mt-1 text-xs text-fg-subtle">
-            {lifts.length} total set{lifts.length === 1 ? "" : "s"} logged
+          <p className="mt-1 text-3xl font-bold">
+            {weekVolume.toLocaleString()}{" "}
+            <span className="text-base font-normal text-fg-muted">
+              {scoreUnit}
+            </span>
           </p>
+          <p className="mt-1 text-xs text-fg-subtle">weight × reps × sets</p>
         </div>
 
         <div className="card">
@@ -121,6 +165,33 @@ export default async function DashboardPage() {
               Manage goals →
             </Link>
           </p>
+        </div>
+      </div>
+
+      {/* Muscle-group progression (this week) */}
+      <div className="card">
+        <h2 className="text-sm font-medium uppercase tracking-wide text-fg-muted">
+          Muscle groups · this week
+        </h2>
+        <div className="mt-4 space-y-3">
+          {MUSCLE_GROUPS.map((m) => {
+            const v = weekByMuscle.get(m) ?? 0;
+            const pct = Math.round((v / maxMuscle) * 100);
+            return (
+              <div key={m} className="flex items-center gap-3">
+                <span className="w-20 shrink-0 text-sm text-fg-muted">{m}</span>
+                <div className="h-2.5 flex-1 overflow-hidden rounded-full bg-surface-2">
+                  <div
+                    className="h-full rounded-full bg-accent"
+                    style={{ width: `${v > 0 ? Math.max(4, pct) : 0}%` }}
+                  />
+                </div>
+                <span className="w-16 shrink-0 text-right text-xs text-fg-subtle">
+                  {v > 0 ? v.toLocaleString() : "—"}
+                </span>
+              </div>
+            );
+          })}
         </div>
       </div>
 
@@ -137,7 +208,7 @@ export default async function DashboardPage() {
           <div className="card text-center text-fg-muted">
             <p className="text-lg">No lifts logged yet.</p>
             <p className="mt-1 text-sm">
-              Log your first set and your strength graph starts building.
+              Log your first set and your strength engine starts building.
             </p>
             <Link href="/log" className="btn-primary mt-4 inline-flex">
               Log your first lift
@@ -153,6 +224,7 @@ export default async function DashboardPage() {
               const pct = goal1RM
                 ? Math.min(100, Math.round((s.best1RM / goal1RM) * 100))
                 : null;
+              const prDate = projectedPRDate(s.points, 5);
               return (
                 <Link
                   key={key}
@@ -175,6 +247,9 @@ export default async function DashboardPage() {
                   </p>
                   <p className="mt-1 text-xs text-fg-subtle">
                     Last lifted: {s.latestWeight} {s.unit} × {s.latestReps}
+                    {prDate
+                      ? ` · on pace for +5 ${s.unit} by ${shortDate(prDate)}`
+                      : ""}
                   </p>
                   {pct !== null && goal && (
                     <div className="mt-3">
