@@ -8,6 +8,8 @@ export interface ExistingProfile {
   trainingLevel: string | null;
   daysPerWeek: number | null;
   units: string;
+  sex: string | null;
+  heightCm: number | null;
 }
 
 const GOALS = [
@@ -30,6 +32,10 @@ export default function ProfileForm({
   );
   const [daysPerWeek, setDays] = useState(String(existing?.daysPerWeek ?? 4));
   const [units, setUnits] = useState(existing?.units ?? "lb");
+  const [sex, setSex] = useState(existing?.sex ?? "");
+  const [heightCm, setHeight] = useState(
+    existing?.heightCm ? String(existing.heightCm) : "",
+  );
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -46,6 +52,8 @@ export default function ProfileForm({
           trainingLevel,
           daysPerWeek: Number(daysPerWeek),
           units,
+          sex: sex || undefined,
+          heightCm: heightCm ? Number(heightCm) : undefined,
         }),
       });
       if (!res.ok) {
@@ -100,6 +108,28 @@ export default function ProfileForm({
             <option value="lb">lb</option>
             <option value="kg">kg</option>
           </select>
+        </div>
+      </div>
+      <div className="grid grid-cols-2 gap-3">
+        <div>
+          <label className="label">Sex (for body-fat estimate)</label>
+          <select className="input" value={sex} onChange={(e) => setSex(e.target.value)}>
+            <option value="">Prefer not to say</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div>
+          <label className="label">Height (cm)</label>
+          <input
+            className="input"
+            type="number"
+            min="0"
+            value={heightCm}
+            onChange={(e) => setHeight(e.target.value)}
+            placeholder="178"
+          />
         </div>
       </div>
       {error && (

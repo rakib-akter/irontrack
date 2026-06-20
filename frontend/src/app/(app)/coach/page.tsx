@@ -106,6 +106,8 @@ export default async function CoachPage() {
                 trainingLevel: profile.trainingLevel,
                 daysPerWeek: profile.daysPerWeek,
                 units: profile.units,
+                sex: profile.sex,
+                heightCm: profile.heightCm,
               }
             : null
         }

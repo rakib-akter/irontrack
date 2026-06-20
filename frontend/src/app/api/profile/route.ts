@@ -11,6 +11,7 @@ const schema = z.object({
   daysPerWeek: z.number().int().min(1).max(7).optional(),
   units: z.enum(["lb", "kg"]).optional(),
   sex: z.enum(["male", "female", "other"]).optional(),
+  heightCm: z.number().positive().max(260).optional(),
   equipment: z.array(z.string().max(40)).max(20).optional(),
   injuries: z.array(z.string().max(60)).max(20).optional(),
 });
