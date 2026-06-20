@@ -10,7 +10,7 @@ const links = [
   { href: "/coach", label: "Coach" },
   { href: "/log", label: "Log Lift" },
   { href: "/nutrition", label: "Nutrition" },
-  { href: "/bodyweight", label: "Body Weight" },
+  { href: "/body", label: "Body" },
   { href: "/goals", label: "Goals" },
 ];
 
