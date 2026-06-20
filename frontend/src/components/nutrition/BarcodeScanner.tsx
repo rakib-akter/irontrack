@@ -138,7 +138,6 @@ export default function BarcodeScanner() {
 
       {scanning && (
         <div className="overflow-hidden rounded-xl border border-border bg-black">
-          {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
           <video ref={videoRef} className="h-48 w-full object-cover" />
         </div>
       )}

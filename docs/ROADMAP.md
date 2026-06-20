@@ -38,7 +38,8 @@ focused commits. ✅ done · 🔄 in progress · ⬜ planned.
 - ✅ Logging: manual, quick-add from food DB, AI meal parsing (barcode: follow-up)
 - ✅ Calorie ring, macro rings, micronutrient heatmap, nutrition quality score
 - ✅ AI: low-nutrient explanations + practical food suggestions + confidence
-- ⬜ Follow-ups: meal templates, barcode scanning, more foods / USDA integration
+- ✅ Follow-ups: meal templates (save/apply a day's log) + barcode scanning (Open Food Facts)
+- ⬜ Remaining: more foods / USDA integration
 
 ## Phase 3 — AI Strength Coach + Research engine  *(the moat)* ✅
 - ✅ Research corpus (14 sources / 42 claims) → retrieval (lexical; pgvector-via-FastAPI is the upgrade seam)
