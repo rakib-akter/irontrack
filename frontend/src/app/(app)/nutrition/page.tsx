@@ -15,6 +15,10 @@ import NutritionEntryList, {
   type NutritionRow,
 } from "@/components/nutrition/NutritionEntryList";
 import NutritionTargetForm from "@/components/nutrition/NutritionTargetForm";
+import NutritionTemplates, {
+  type TemplateSummary,
+} from "@/components/nutrition/NutritionTemplates";
+import type { TemplateItem } from "@/lib/nutrition/entryFields";
 
 export const dynamic = "force-dynamic";
 
@@ -58,13 +62,27 @@ export default async function NutritionPage() {
   start.setHours(0, 0, 0, 0);
   const end = new Date(start.getTime() + 86_400_000);
 
-  const [entries, target] = await Promise.all([
+  const [entries, target, mealTemplates] = await Promise.all([
     prisma.nutritionEntry.findMany({
       where: { userId, loggedAt: { gte: start, lt: end } },
       orderBy: { loggedAt: "asc" },
     }),
     prisma.nutritionTarget.findUnique({ where: { userId } }),
+    prisma.mealTemplate.findMany({
+      where: { userId },
+      orderBy: { createdAt: "desc" },
+    }),
   ]);
+
+  const templateSummaries: TemplateSummary[] = mealTemplates.map((t) => {
+    const items = (t.items as unknown as TemplateItem[]) ?? [];
+    return {
+      id: t.id,
+      name: t.name,
+      itemCount: items.length,
+      calories: items.reduce((s, it) => s + (it.calories ?? 0), 0),
+    };
+  });
 
   const totals = sumNutrients(entries);
   const percents = microPercents(totals);
@@ -174,6 +192,12 @@ export default async function NutritionPage() {
           <NutritionEntryList entries={rows} />
         </div>
       </div>
+
+      {/* Meal templates */}
+      <NutritionTemplates
+        templates={templateSummaries}
+        canSave={entries.length > 0}
+      />
 
       {/* Targets */}
       <NutritionTargetForm
