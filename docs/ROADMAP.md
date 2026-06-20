@@ -48,10 +48,11 @@ focused commits. ✅ done · 🔄 in progress · ⬜ planned.
 - ✅ Confidence + reasoning + evidence (citations) on every recommendation
 - ✅ Coach memory (strengths, weak points, compliance) on CoachProfile
 
-## Phase 4 — Body Composition
-- ⬜ Track weight, waist, neck, progress photos
-- ⬜ Estimate lean/fat mass, trend weight
-- ⬜ Timeline (month/quarter/year) + "most loss was fat" insight
+## Phase 4 — Body Composition ✅
+- ✅ Track weight, waist, neck, hip + progress photos (Supabase Storage, private)
+- ✅ Estimate body fat (US Navy), lean/fat mass, EWMA trend weight
+- ✅ Charts (weight+trend, body-fat %, lean vs fat) + month/quarter/year timeline
+- ✅ AI composition insight ("you lost 6 — ~81% from fat")
 
 ## Phase 5 — Recovery + Readiness
 - ⬜ Track sleep, stress, steps, energy, DOMS
