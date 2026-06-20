@@ -15,6 +15,8 @@ const createSchema = z.object({
   carbsG: z.number().min(0).optional(),
   fatG: z.number().min(0).optional(),
   fiberG: z.number().min(0).optional(),
+  // Full pre-computed nutrients (e.g. from a barcode lookup).
+  nutrients: z.record(z.string(), z.number()).optional(),
   mealType: z.enum(["breakfast", "lunch", "dinner", "snack"]).optional(),
   source: z.enum(["manual", "template", "barcode", "ai"]).optional(),
   loggedAt: z.string().datetime().optional(),
@@ -85,6 +87,28 @@ export async function POST(req: Request) {
           carbsG: n.carbsG,
           fatG: n.fatG,
           fiberG: n.fiberG,
+          ...microData(n),
+          loggedAt,
+        },
+      });
+      return ok(entry, 201);
+    }
+
+    // Pre-computed nutrients (barcode / AI).
+    if (body.nutrients && body.name) {
+      const n = body.nutrients as unknown as Nutrients;
+      const entry = await prisma.nutritionEntry.create({
+        data: {
+          userId,
+          name: body.name.trim(),
+          grams: body.grams ?? null,
+          mealType: body.mealType ?? null,
+          source: body.source ?? "manual",
+          calories: n.calories ?? 0,
+          proteinG: n.proteinG ?? 0,
+          carbsG: n.carbsG ?? 0,
+          fatG: n.fatG ?? 0,
+          fiberG: n.fiberG ?? 0,
           ...microData(n),
           loggedAt,
         },

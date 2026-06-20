@@ -18,6 +18,7 @@ import NutritionTargetForm from "@/components/nutrition/NutritionTargetForm";
 import NutritionTemplates, {
   type TemplateSummary,
 } from "@/components/nutrition/NutritionTemplates";
+import BarcodeScanner from "@/components/nutrition/BarcodeScanner";
 import type { TemplateItem } from "@/lib/nutrition/entryFields";
 
 export const dynamic = "force-dynamic";
@@ -193,11 +194,14 @@ export default async function NutritionPage() {
         </div>
       </div>
 
-      {/* Meal templates */}
-      <NutritionTemplates
-        templates={templateSummaries}
-        canSave={entries.length > 0}
-      />
+      {/* Barcode + meal templates */}
+      <div className="grid gap-6 md:grid-cols-2">
+        <BarcodeScanner />
+        <NutritionTemplates
+          templates={templateSummaries}
+          canSave={entries.length > 0}
+        />
+      </div>
 
       {/* Targets */}
       <NutritionTargetForm

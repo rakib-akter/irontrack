@@ -211,10 +211,10 @@ export function foodByKey(key: string): Food | undefined {
   return BY_KEY.get(key);
 }
 
-/** Scale a food's per-100g nutrients to a given gram amount. */
-export function nutrientsForGrams(food: Food, grams: number): Nutrients {
+/** Scale per-100g nutrients to a given gram amount. */
+export function scaleNutrients(per100: Nutrients, grams: number): Nutrients {
   const f = grams / 100;
-  const p = food.per100;
+  const p = per100;
   const scale = (v: number | undefined) =>
     v === undefined ? undefined : Math.round(v * f * 100) / 100;
   return {
@@ -238,4 +238,9 @@ export function nutrientsForGrams(food: Food, grams: number): Nutrients {
     vitaminKUg: scale(p.vitaminKUg),
     omega3G: scale(p.omega3G),
   };
+}
+
+/** Scale a food's per-100g nutrients to a given gram amount. */
+export function nutrientsForGrams(food: Food, grams: number): Nutrients {
+  return scaleNutrients(food.per100, grams);
 }
