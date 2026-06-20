@@ -18,6 +18,7 @@ import MeasurementForm from "@/components/body/MeasurementForm";
 import MeasurementList, {
   type MeasurementRow,
 } from "@/components/body/MeasurementList";
+import ProgressPhotos from "@/components/body/ProgressPhotos";
 
 export const dynamic = "force-dynamic";
 
@@ -186,6 +187,8 @@ export default async function BodyPage({
           <MeasurementList rows={rows} />
         </div>
       </div>
+
+      <ProgressPhotos />
     </div>
   );
 }
