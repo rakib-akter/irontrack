@@ -40,12 +40,12 @@ focused commits. ✅ done · 🔄 in progress · ⬜ planned.
 - ✅ AI: low-nutrient explanations + practical food suggestions + confidence
 - ⬜ Follow-ups: meal templates, barcode scanning, more foods / USDA integration
 
-## Phase 3 — AI Strength Coach + Research engine  *(the moat)*
-- ⬜ Research summaries → embeddings → retrieval (pgvector)
-- ⬜ Citation engine (retrieval-only, no hallucinated citations)
-- ⬜ Weekly plan generation (exercises/sets/reps/intensity/rest/progression)
-- ⬜ Confidence + reasoning + evidence on every recommendation
-- ⬜ Coach memory (preferences, history, compliance, weak points)
+## Phase 3 — AI Strength Coach + Research engine  *(the moat)* ✅
+- ✅ Research corpus (14 sources / 42 claims) → retrieval (lexical; pgvector-via-FastAPI is the upgrade seam)
+- ✅ Citation engine (retrieval-only — the coach can only cite retrieved claims)
+- ✅ Weekly plan generation (per-lift sets/reps/intensity/rest/progression)
+- ✅ Confidence + reasoning + evidence (citations) on every recommendation
+- ✅ Coach memory (strengths, weak points, compliance) on CoachProfile
 
 ## Phase 4 — Body Composition
 - ⬜ Track weight, waist, neck, progress photos
