@@ -1,9 +1,11 @@
 import { redirect } from "next/navigation";
+import { Prisma } from "@prisma/client";
 import { getUserId } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { estimateOneRepMax } from "@/lib/strength";
 import { strengthRatePerWeek, type ProgressPoint } from "@/lib/progress";
 import { generatePlan, type ExerciseState, type GoalType } from "@/lib/coach/planner";
+import { deriveMemory } from "@/lib/coach/memory";
 import ProfileForm from "@/components/coach/ProfileForm";
 import CoachPlan from "@/components/coach/CoachPlan";
 
@@ -62,6 +64,24 @@ export default async function CoachPage() {
     exercises,
   );
 
+  // Coach memory: derive + persist so it accrues over time.
+  const memory = deriveMemory(
+    exercises,
+    lifts.map((l) => ({
+      exercise: l.exercise,
+      weight: l.weight,
+      reps: l.reps,
+      sets: l.sets,
+      performedAt: l.performedAt,
+    })),
+  );
+  const memoryJson = memory as unknown as Prisma.InputJsonValue;
+  await prisma.coachProfile.upsert({
+    where: { userId },
+    create: { userId, memory: memoryJson },
+    update: { memory: memoryJson },
+  });
+
   return (
     <div className="space-y-8">
       <div>
@@ -90,6 +110,26 @@ export default async function CoachPage() {
             : null
         }
       />
+
+      {memory.bullets.length > 0 && memory.totalSessions > 0 && (
+        <div className="card">
+          <h2 className="text-sm font-medium uppercase tracking-wide text-fg-muted">
+            What your coach knows
+          </h2>
+          <ul className="mt-3 space-y-2 text-sm">
+            {memory.bullets.map((b, i) => (
+              <li key={i} className="flex items-start gap-2">
+                <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
+                <span>{b}</span>
+              </li>
+            ))}
+          </ul>
+          <p className="mt-3 text-xs text-fg-subtle">
+            This sharpens as you log more — the plan adapts to your weak points
+            and progress.
+          </p>
+        </div>
+      )}
 
       <CoachPlan plan={plan} />
     </div>
