@@ -11,6 +11,7 @@ const links = [
   { href: "/log", label: "Log Lift" },
   { href: "/nutrition", label: "Nutrition" },
   { href: "/body", label: "Body" },
+  { href: "/recovery", label: "Recovery" },
   { href: "/goals", label: "Goals" },
 ];
 
