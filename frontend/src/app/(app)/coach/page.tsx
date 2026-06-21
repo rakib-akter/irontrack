@@ -6,6 +6,7 @@ import { estimateOneRepMax } from "@/lib/strength";
 import { strengthRatePerWeek, type ProgressPoint } from "@/lib/progress";
 import { generatePlan, type ExerciseState, type GoalType } from "@/lib/coach/planner";
 import { deriveMemory } from "@/lib/coach/memory";
+import { recoveryScore } from "@/lib/recovery";
 import ProfileForm from "@/components/coach/ProfileForm";
 import CoachPlan from "@/components/coach/CoachPlan";
 
@@ -15,13 +16,29 @@ export default async function CoachPage() {
   const userId = await getUserId();
   if (!userId) redirect("/login");
 
-  const [profile, lifts] = await Promise.all([
+  const recoveryCutoff = new Date(Date.now() - 14 * 86_400_000);
+  const [profile, lifts, recoveryLogs] = await Promise.all([
     prisma.userProfile.findUnique({ where: { userId } }),
     prisma.liftEntry.findMany({
       where: { userId },
       orderBy: { performedAt: "asc" },
     }),
+    prisma.recoveryLog.findMany({
+      where: { userId, date: { gte: recoveryCutoff } },
+      orderBy: { date: "asc" },
+    }),
   ]);
+
+  // Recent recovery signal for the planner.
+  const recoveryScores = recoveryLogs
+    .map((l) => recoveryScore(l))
+    .filter((s): s is number => s !== null);
+  const recovery = {
+    avgScore: recoveryScores.length
+      ? recoveryScores.reduce((a, b) => a + b, 0) / recoveryScores.length
+      : null,
+    sampleSize: recoveryScores.length,
+  };
 
   // Build per-exercise state for the planner.
   const byExercise = new Map<string, { unit: string; best1RM: number; points: ProgressPoint[] }>();
@@ -62,6 +79,7 @@ export default async function CoachPage() {
       units: profile?.units ?? "lb",
     },
     exercises,
+    recovery,
   );
 
   // Coach memory: derive + persist so it accrues over time.

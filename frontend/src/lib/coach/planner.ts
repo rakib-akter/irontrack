@@ -80,9 +80,15 @@ function paramsForGoal(goal: GoalType | null): GoalParams {
   }
 }
 
+export interface RecoverySignal {
+  avgScore: number | null; // recent average recovery score (0-100)
+  sampleSize: number;
+}
+
 export async function generatePlan(
   profile: CoachProfileInput,
   exercises: ExerciseState[],
+  recovery?: RecoverySignal,
 ): Promise<WeeklyPlan> {
   const params = paramsForGoal(profile.primaryGoal);
   const days = profile.daysPerWeek ?? 3;
@@ -153,6 +159,29 @@ export async function generatePlan(
       reasoning: "Your lifts are progressing — small, steady increments sustain it.",
       citations: overloadCite ? [overloadCite.citation] : [],
     });
+  }
+
+  // 4b) Recovery-aware adjustment.
+  if (recovery && recovery.avgScore !== null && recovery.sampleSize >= 3) {
+    if (recovery.avgScore < 55) {
+      const recCite = await retrieveOne("deload fatigue management recovery sleep");
+      recs.unshift({
+        title: "Back off — your recovery is running low",
+        detail: `Recovery has averaged ${Math.round(recovery.avgScore)} lately. Cut volume ~30% this week, keep intensity moderate, and prioritize sleep and food.`,
+        confidence: 0.75,
+        reasoning: "Low recovery means added volume will dig a deeper hole than it fills.",
+        citations: recCite ? [recCite.citation] : [],
+      });
+    } else if (recovery.avgScore >= 78) {
+      const pushCite = await retrieveOne("weekly set volume per muscle for hypertrophy");
+      recs.push({
+        title: "Recovery is strong — a good week to push",
+        detail: `Recovery is averaging ${Math.round(recovery.avgScore)}. You can add a set or two to your main lifts this week.`,
+        confidence: 0.7,
+        reasoning: "Good recovery raises your tolerable training volume.",
+        citations: pushCite ? [pushCite.citation] : [],
+      });
+    }
   }
 
   // 5) Protein (nutrition tie-in).
