@@ -54,9 +54,10 @@ focused commits. ✅ done · 🔄 in progress · ⬜ planned.
 - ✅ Charts (weight+trend, body-fat %, lean vs fat) + month/quarter/year timeline
 - ✅ AI composition insight ("you lost 6 — ~81% from fat")
 
-## Phase 5 — Recovery + Readiness
-- ⬜ Track sleep, stress, steps, energy, DOMS
-- ⬜ Recovery score + training readiness + deload/volume warnings
+## Phase 5 — Recovery + Readiness ✅
+- ✅ Track sleep, sleep quality, stress, steps, energy, soreness (DOMS), resting HR
+- ✅ Recovery score + training-readiness verdict + warnings (volume/sleep/food/deload)
+- ✅ Recovery trend chart; the coach plan is recovery-aware (auto deload when low)
 
 ## Phase 6 — Intelligence Layer
 - ⬜ Daily / weekly / monthly reports: wins, misses, predictions, next actions
