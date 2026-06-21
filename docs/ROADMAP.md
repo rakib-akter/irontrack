@@ -59,8 +59,10 @@ focused commits. ✅ done · 🔄 in progress · ⬜ planned.
 - ✅ Recovery score + training-readiness verdict + warnings (volume/sleep/food/deload)
 - ✅ Recovery trend chart; the coach plan is recovery-aware (auto deload when low)
 
-## Phase 6 — Intelligence Layer
-- ⬜ Daily / weekly / monthly reports: wins, misses, predictions, next actions
+## Phase 6 — Intelligence Layer ✅
+- ✅ Daily / weekly / monthly reports: wins, misses, predictions, next actions
+- ✅ Synthesizes all pillars (strength PRs/volume, nutrition shortfalls, body
+  composition, recovery/deload); persisted to the Report table
 
 ## Phase 7 — Premium polish
 - ⬜ Streaks, export reports, period comparisons, optimistic updates,
