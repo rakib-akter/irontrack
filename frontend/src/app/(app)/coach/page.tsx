@@ -9,6 +9,7 @@ import { deriveMemory } from "@/lib/coach/memory";
 import { recoveryScore } from "@/lib/recovery";
 import ProfileForm from "@/components/coach/ProfileForm";
 import CoachPlan from "@/components/coach/CoachPlan";
+import CoachNote from "@/components/coach/CoachNote";
 
 export const dynamic = "force-dynamic";
 
@@ -151,6 +152,7 @@ export default async function CoachPage() {
         </div>
       )}
 
+      <CoachNote />
       <CoachPlan plan={plan} />
     </div>
   );
