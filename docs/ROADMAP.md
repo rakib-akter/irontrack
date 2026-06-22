@@ -64,6 +64,10 @@ focused commits. ✅ done · 🔄 in progress · ⬜ planned.
 - ✅ Synthesizes all pillars (strength PRs/volume, nutrition shortfalls, body
   composition, recovery/deload); persisted to the Report table
 
-## Phase 7 — Premium polish
-- ⬜ Streaks, export reports, period comparisons, optimistic updates,
-  micro-animations, performance pass
+## Phase 7 — Premium polish ✅
+- ✅ Onboarding flow (first-run profile + targets) with dashboard redirect
+- ✅ Streaks (current/longest across all activity) on the dashboard
+- ✅ Report export (Markdown download + print-to-PDF)
+- ✅ Dark mode + Framer Motion micro-animations (Phase 0c)
+- ✅ Period comparisons (reports compare vs the previous period; body/reports timelines)
+- 🔄 Optional later: deeper optimistic updates, broader perf pass
