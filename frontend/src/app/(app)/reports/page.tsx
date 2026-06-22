@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { generateReport, type ReportPeriod } from "@/lib/reports";
 import ReportView from "@/components/reports/ReportView";
 import ReportPeriodSelector from "@/components/reports/ReportPeriodSelector";
+import ExportButton from "@/components/reports/ExportButton";
 
 export const dynamic = "force-dynamic";
 
@@ -70,7 +71,10 @@ export default async function ReportsPage({
             across strength, nutrition, body, and recovery.
           </p>
         </div>
-        <ReportPeriodSelector current={period} />
+        <div className="flex flex-wrap items-center gap-3">
+          <ReportPeriodSelector current={period} />
+          <ExportButton report={report} />
+        </div>
       </div>
 
       <ReportView report={report} />
