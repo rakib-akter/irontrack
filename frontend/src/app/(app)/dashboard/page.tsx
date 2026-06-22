@@ -17,6 +17,7 @@ import {
 } from "@/lib/exerciseCatalog";
 import { generateInsights } from "@/lib/insights";
 import InsightsPanel from "@/components/InsightsPanel";
+import { computeStreak } from "@/lib/streak";
 
 export const dynamic = "force-dynamic";
 
@@ -28,18 +29,41 @@ export default async function DashboardPage() {
   const userId = await getUserId();
   if (!userId) redirect("/login");
 
-  const [lifts, goals, bodyWeights, bwGoal] = await Promise.all([
-    prisma.liftEntry.findMany({
-      where: { userId },
-      orderBy: { performedAt: "desc" },
-    }),
-    prisma.goal.findMany({ where: { userId } }),
-    prisma.bodyWeightEntry.findMany({
-      where: { userId },
-      orderBy: { performedAt: "asc" },
-    }),
-    prisma.bodyWeightGoal.findUnique({ where: { userId } }),
-  ]);
+  const [lifts, goals, bodyWeights, bwGoal, profile, nutDates, recDates, measDates] =
+    await Promise.all([
+      prisma.liftEntry.findMany({
+        where: { userId },
+        orderBy: { performedAt: "desc" },
+      }),
+      prisma.goal.findMany({ where: { userId } }),
+      prisma.bodyWeightEntry.findMany({
+        where: { userId },
+        orderBy: { performedAt: "asc" },
+      }),
+      prisma.bodyWeightGoal.findUnique({ where: { userId } }),
+      prisma.userProfile.findUnique({
+        where: { userId },
+        select: { onboardedAt: true },
+      }),
+      prisma.nutritionEntry.findMany({ where: { userId }, select: { loggedAt: true } }),
+      prisma.recoveryLog.findMany({ where: { userId }, select: { date: true } }),
+      prisma.bodyMeasurement.findMany({
+        where: { userId },
+        select: { performedAt: true },
+      }),
+    ]);
+
+  // First-run onboarding.
+  if (!profile?.onboardedAt) redirect("/onboarding");
+
+  // Logging streak across every activity type.
+  const activityDays = new Set<string>();
+  for (const l of lifts) activityDays.add(l.performedAt.toISOString().slice(0, 10));
+  for (const b of bodyWeights) activityDays.add(b.performedAt.toISOString().slice(0, 10));
+  for (const n of nutDates) activityDays.add(n.loggedAt.toISOString().slice(0, 10));
+  for (const r of recDates) activityDays.add(r.date.toISOString().slice(0, 10));
+  for (const m of measDates) activityDays.add(m.performedAt.toISOString().slice(0, 10));
+  const streak = computeStreak(activityDays);
 
   // Body weight summary.
   const currentBW = bodyWeights.length
@@ -126,18 +150,36 @@ export default async function DashboardPage() {
     <div className="space-y-8">
       {/* Strength score hero */}
       <div className="glass p-6">
-        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-accent">
-          Strength score
-        </p>
-        <p className="mt-1 text-5xl font-bold tracking-tight">
-          {strengthScore.toLocaleString()}{" "}
-          <span className="text-xl font-normal text-fg-muted">{scoreUnit}</span>
-        </p>
-        <p className="mt-1 text-sm text-fg-muted">
-          Sum of your best estimated 1RMs across{" "}
-          {exercises.length} lift{exercises.length === 1 ? "" : "s"} — it climbs
-          as you get stronger.
-        </p>
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-accent">
+              Strength score
+            </p>
+            <p className="mt-1 text-5xl font-bold tracking-tight">
+              {strengthScore.toLocaleString()}{" "}
+              <span className="text-xl font-normal text-fg-muted">
+                {scoreUnit}
+              </span>
+            </p>
+            <p className="mt-1 text-sm text-fg-muted">
+              Sum of your best estimated 1RMs across {exercises.length} lift
+              {exercises.length === 1 ? "" : "s"} — it climbs as you get stronger.
+            </p>
+          </div>
+          {streak.current > 0 && (
+            <div className="shrink-0 rounded-2xl border border-border bg-surface px-4 py-3 text-center">
+              <p className="text-2xl font-bold text-accent">
+                🔥 {streak.current}
+              </p>
+              <p className="text-[11px] text-fg-subtle">
+                day streak
+                {streak.longest > streak.current
+                  ? ` · best ${streak.longest}`
+                  : ""}
+              </p>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* AI insights */}
