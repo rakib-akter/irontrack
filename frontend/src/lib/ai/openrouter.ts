@@ -12,10 +12,15 @@ export interface ChatMessage {
   content: string;
 }
 
+// Current free OpenRouter models, ordered by observed reliability/speed. Free
+// slugs rotate over time — override with OPENROUTER_MODELS if these go stale.
+// The gateway falls through 404/429 to the next, so listing several is robust.
 const DEFAULT_FREE_MODELS = [
+  "google/gemma-4-31b-it:free",
+  "qwen/qwen3-next-80b-a3b-instruct:free",
   "meta-llama/llama-3.3-70b-instruct:free",
-  "deepseek/deepseek-chat:free",
-  "qwen/qwen-2.5-72b-instruct:free",
+  "google/gemma-4-26b-a4b-it:free",
+  "meta-llama/llama-3.2-3b-instruct:free",
 ];
 
 export function aiEnabled(): boolean {
